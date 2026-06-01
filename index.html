@@ -334,7 +334,7 @@
 
   <div class="results-actions">
     <button class="btn" onclick="downloadPDF()">Download Report</button>
-    <button class="btn" onclick="restartExam()">Retake Exam</button>
+    <button class="btn" onclick="restartExam()" style="display:none !important">Retake Exam</button>
     <button class="btn" onclick="backToSplash()">Module Select</button>
   </div>
 </div>
@@ -1470,18 +1470,143 @@ let results = [];
 let hintVisible = false;
 const qCounts = {1:10, 2:10, 3:10, 4:10};
 
+// ── localStorage keys ──────────────────────────────────────────────────────
+const SESSION_KEY = 'nrsg_session';
+const MASTERY_KEY = 'nrsg_mastery';
+
+// ── Mastery helpers ────────────────────────────────────────────────────────
+function loadMastery(){
+  try {
+    const raw = localStorage.getItem(MASTERY_KEY);
+    if(raw){ const d = JSON.parse(raw); return { mastered: d.mastered||[], incorrect: d.incorrect||[] }; }
+  } catch(e){}
+  return { mastered: [], incorrect: [] };
+}
+
+function saveMastery(m){ try{ localStorage.setItem(MASTERY_KEY, JSON.stringify(m)); }catch(e){} }
+
+// Called after every answer to update mastery in real-time
+function recordAnswer(qId, isCorrect){
+  const m = loadMastery();
+  if(isCorrect){
+    if(m.mastered.indexOf(qId) === -1) m.mastered.push(qId);
+    const ii = m.incorrect.indexOf(qId);
+    if(ii > -1) m.incorrect.splice(ii, 1);
+  } else {
+    // Only add to incorrect if NOT already mastered
+    if(m.mastered.indexOf(qId) === -1 && m.incorrect.indexOf(qId) === -1){
+      m.incorrect.push(qId);
+    }
+  }
+  saveMastery(m);
+}
+
+// Called at end of quiz: check each module; if all questions mastered → reset that module
+function checkModuleResets(){
+  const m = loadMastery();
+  let changed = false;
+  [1,2,3,4].forEach(function(mod){
+    const modIds = ALL_QUESTIONS
+      .map(function(q,i){ return q.module===mod ? i : -1; })
+      .filter(function(i){ return i>-1; });
+    const allMastered = modIds.every(function(id){ return m.mastered.indexOf(id)>-1; });
+    if(allMastered){
+      modIds.forEach(function(id){
+        const mi = m.mastered.indexOf(id); if(mi>-1) m.mastered.splice(mi,1);
+        const ii = m.incorrect.indexOf(id); if(ii>-1) m.incorrect.splice(ii,1);
+      });
+      changed = true;
+      console.log('Module '+mod+' fully mastered — reset to unseen.');
+    }
+  });
+  if(changed) saveMastery(m);
+}
+
+// ── Session helpers ────────────────────────────────────────────────────────
+function saveSession(){
+  try{
+    const session = {
+      activeQuestionIds: activeQuestions.map(function(q){ return ALL_QUESTIONS.indexOf(q); }),
+      currentIndex: currentIndex,
+      answered: answered,
+      correct: correct,
+      results: results.map(function(r){
+        return { qId: ALL_QUESTIONS.indexOf(r.q), userCorrect: r.userCorrect, userAnswer: r.userAnswer };
+      }),
+      selectedModules: selectedModules.slice(),
+      qCounts: JSON.parse(JSON.stringify(qCounts))
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  }catch(e){}
+}
+
+function clearSession(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
+
+function restoreSession(){
+  try{
+    const raw = localStorage.getItem(SESSION_KEY);
+    if(!raw) return false;
+    const s = JSON.parse(raw);
+    // Validate IDs are all within range
+    if(!s.activeQuestionIds || !s.activeQuestionIds.length) return false;
+    const valid = s.activeQuestionIds.every(function(id){ return id>=0 && id<ALL_QUESTIONS.length; });
+    if(!valid) return false;
+
+    // Restore state
+    activeQuestions = s.activeQuestionIds.map(function(id){ return ALL_QUESTIONS[id]; });
+    currentIndex = s.currentIndex || 0;
+    answered = s.answered || 0;
+    correct = s.correct || 0;
+    results = (s.results||[]).map(function(r){
+      return { q: ALL_QUESTIONS[r.qId], userCorrect: r.userCorrect, userAnswer: r.userAnswer };
+    });
+
+    // Restore splash state (module selection + sliders)
+    if(s.selectedModules){
+      selectedModules = s.selectedModules;
+      [1,2,3,4].forEach(function(n){
+        const card = document.getElementById('mod-'+n);
+        const row = document.getElementById('slider-row-'+n);
+        if(selectedModules.indexOf(n)>-1){
+          card.classList.add('selected'); card.classList.remove('unselected');
+          row.classList.remove('disabled');
+        } else {
+          card.classList.remove('selected'); card.classList.add('unselected');
+          row.classList.add('disabled');
+        }
+      });
+    }
+    if(s.qCounts){
+      [1,2,3,4].forEach(function(n){
+        if(s.qCounts[n] !== undefined){
+          qCounts[n] = s.qCounts[n];
+          const slider = document.getElementById('slider-'+n);
+          const valEl  = document.getElementById('val-'+n);
+          if(slider) slider.value = qCounts[n];
+          if(valEl)  valEl.textContent = qCounts[n];
+        }
+      });
+      updateTotalCount();
+    }
+
+    // If the quiz is already finished, treat as complete (clear session, don't resume)
+    if(currentIndex >= activeQuestions.length) return false;
+
+    return true;
+  }catch(e){ return false; }
+}
+
+// ── Module / slider UI ─────────────────────────────────────────────────────
 function toggleModule(n){
   const card = document.getElementById('mod-'+n);
   const idx = selectedModules.indexOf(n);
   if(idx > -1){
     selectedModules.splice(idx,1);
-    card.classList.remove('selected');
-    card.classList.add('unselected');
+    card.classList.remove('selected'); card.classList.add('unselected');
     document.getElementById('slider-row-'+n).classList.add('disabled');
   } else {
     selectedModules.push(n);
-    card.classList.add('selected');
-    card.classList.remove('unselected');
+    card.classList.add('selected'); card.classList.remove('unselected');
     document.getElementById('slider-row-'+n).classList.remove('disabled');
   }
   document.getElementById('start-btn').disabled = selectedModules.length === 0;
@@ -1491,7 +1616,7 @@ function toggleModule(n){
 function toggleAllModules(){
   if(selectedModules.length === 4){
     selectedModules = [];
-    [1,2,3,4].forEach(n => {
+    [1,2,3,4].forEach(function(n){
       document.getElementById('mod-'+n).classList.remove('selected');
       document.getElementById('mod-'+n).classList.add('unselected');
       document.getElementById('slider-row-'+n).classList.add('disabled');
@@ -1499,7 +1624,7 @@ function toggleAllModules(){
     document.getElementById('start-btn').disabled = true;
   } else {
     selectedModules = [1,2,3,4];
-    [1,2,3,4].forEach(n => {
+    [1,2,3,4].forEach(function(n){
       document.getElementById('mod-'+n).classList.add('selected');
       document.getElementById('mod-'+n).classList.remove('unselected');
       document.getElementById('slider-row-'+n).classList.remove('disabled');
@@ -1520,6 +1645,7 @@ function updateTotalCount(){
   document.getElementById('total-q-count').textContent = total;
 }
 
+// ── Shuffle ────────────────────────────────────────────────────────────────
 function shuffle(arr){
   const a = arr.slice();
   for(let i = a.length-1; i > 0; i--){
@@ -1529,21 +1655,46 @@ function shuffle(arr){
   return a;
 }
 
+// ── Start exam ─────────────────────────────────────────────────────────────
 function startExam(){
+  clearSession();
+  const mastery = loadMastery();
   activeQuestions = [];
-  selectedModules.forEach(function(m){
-    const pool = shuffle(ALL_QUESTIONS.filter(function(q){ return q.module === m; }));
-    const n = Math.min(qCounts[m], pool.length);
-    for(let i=0;i<n;i++) activeQuestions.push(pool[i]);
+
+  selectedModules.forEach(function(mod){
+    // All question indices for this module
+    const modIds = ALL_QUESTIONS
+      .map(function(q,i){ return q.module===mod ? i : -1; })
+      .filter(function(i){ return i>-1; });
+
+    // Bucket 1: unseen + incorrect (not yet mastered) — equal priority, shuffled together
+    const bucket1 = shuffle(modIds.filter(function(id){
+      const isMastered  = mastery.mastered.indexOf(id)  > -1;
+      return !isMastered; // unseen OR incorrect — anything not mastered
+    }));
+
+    // Bucket 2: mastered — fallback only
+    const bucket2 = shuffle(modIds.filter(function(id){
+      return mastery.mastered.indexOf(id) > -1;
+    }));
+
+    const pool = bucket1.concat(bucket2);
+    const n = Math.min(qCounts[mod], pool.length);
+    for(let i = 0; i < n; i++) activeQuestions.push(ALL_QUESTIONS[pool[i]]);
   });
+
   activeQuestions = shuffle(activeQuestions);
   if(activeQuestions.length === 0) return;
+
   currentIndex = 0; answered = 0; correct = 0; results = [];
+  saveSession();
+
   document.getElementById('splash').style.display = 'none';
   document.getElementById('exam').style.display = 'block';
   renderQuestion();
 }
 
+// ── Render question ────────────────────────────────────────────────────────
 function renderQuestion(){
   const q = activeQuestions[currentIndex];
   const total = activeQuestions.length;
@@ -1565,7 +1716,9 @@ function renderQuestion(){
     q.options.forEach(function(opt,i){
       html += '<div class="option" id="opt-'+i+'" onclick="toggleSATA('+i+')"><span class="option-letter">'+letters[i]+'</span><span>'+opt+'</span></div>';
     });
-    optionsEl.innerHTML = html + '<div style="margin-top:0.5rem"><em style="font-size:0.8rem;color:var(--text-muted)">Select all that apply</em><br><button class="btn btn-sm" style="margin-top:0.75rem" onclick="submitSATA()">Submit Answer</button></div>';
+    optionsEl.innerHTML = html +
+      '<div style="margin-top:0.5rem"><em style="font-size:0.8rem;color:var(--text-muted)">Select all that apply</em><br>'+
+      '<button class="btn btn-sm" style="margin-top:0.75rem" onclick="submitSATA()">Submit Answer</button></div>';
   } else {
     let html = '';
     q.options.forEach(function(opt,i){
@@ -1595,6 +1748,7 @@ function toggleSATA(i){
 
 function submitSATA(){
   const q = activeQuestions[currentIndex];
+  const qId = ALL_QUESTIONS.indexOf(q);
   const correctArr = q.correct.slice().sort();
   const selectedArr = sataSelected.slice().sort();
   const isCorrect = JSON.stringify(correctArr) === JSON.stringify(selectedArr);
@@ -1609,13 +1763,16 @@ function submitSATA(){
   answered++;
   if(isCorrect) correct++;
   results.push({q:q, userCorrect:isCorrect, userAnswer:selectedArr});
+  recordAnswer(qId, isCorrect);
   document.getElementById('score-text').textContent = 'Score: '+correct+' / '+answered;
   document.getElementById('next-btn').style.display = 'block';
+  saveSession();
   if(!isCorrect) triggerJumpScare();
 }
 
 function selectAnswer(i){
   const q = activeQuestions[currentIndex];
+  const qId = ALL_QUESTIONS.indexOf(q);
   const isCorrect = i === q.correct;
   lockOptions();
   document.getElementById('opt-'+i).classList.add(isCorrect ? 'correct' : 'wrong');
@@ -1624,8 +1781,10 @@ function selectAnswer(i){
   answered++;
   if(isCorrect) correct++;
   results.push({q:q, userCorrect:isCorrect, userAnswer:i});
+  recordAnswer(qId, isCorrect);
   document.getElementById('score-text').textContent = 'Score: '+correct+' / '+answered;
   document.getElementById('next-btn').style.display = 'block';
+  saveSession();
   if(!isCorrect) triggerJumpScare();
 }
 
@@ -1663,6 +1822,7 @@ function toggleHint(){
 }
 
 function nextQuestion(){
+  saveSession();
   if(currentIndex + 1 >= activeQuestions.length){ showResults(); }
   else { currentIndex++; renderQuestion(); window.scrollTo({top:0,behavior:'smooth'}); }
 }
@@ -1686,6 +1846,8 @@ function triggerJumpScare(){
 }
 
 function showResults(){
+  clearSession();
+  checkModuleResets();
   document.getElementById('exam').style.display = 'none';
   document.getElementById('results').style.display = 'block';
   const pct = Math.round((correct/answered)*100);
@@ -1732,12 +1894,14 @@ function showResults(){
 function toggleReview(i){ document.getElementById('review-body-'+i).classList.toggle('open'); }
 
 function restartExam(){
+  clearSession();
   document.getElementById('results').style.display = 'none';
   document.getElementById('splash').style.display = 'flex';
   sataSelected = [];
 }
 
 function backToSplash(){
+  clearSession();
   document.getElementById('results').style.display = 'none';
   document.getElementById('splash').style.display = 'flex';
   sataSelected = [];
@@ -1754,31 +1918,18 @@ function exportJSON(){
     modules: modNames,
     questions: ALL_QUESTIONS.map(function(q,idx){
       return {
-        id: idx+1,
-        module: q.module,
-        moduleName: modNames[q.module],
-        topic: q.topic,
-        type: q.type,
-        difficulty: q.difficulty,
-        source: q.source,
+        id: idx+1, module: q.module, moduleName: modNames[q.module],
+        topic: q.topic, type: q.type, difficulty: q.difficulty, source: q.source,
         question: q.question,
         options: q.options.map(function(text,i){
-          return {
-            letter: letters[i],
-            index: i,
-            text: text,
-            isCorrect: Array.isArray(q.correct) ? q.correct.indexOf(i)>-1 : q.correct===i
-          };
+          return { letter: letters[i], index: i, text: text,
+            isCorrect: Array.isArray(q.correct) ? q.correct.indexOf(i)>-1 : q.correct===i };
         }),
         correctAnswer: Array.isArray(q.correct) ? q.correct.map(function(i){return letters[i];}).join(', ') : letters[q.correct],
         correctIndex: q.correct,
         questionType: Array.isArray(q.correct) ? 'SATA' : 'single-best-answer',
-        hint: q.hint,
-        rationale: q.rationale,
-        whyWrong: q.whyWrong,
-        rule: q.rule,
-        clinicalCue: q.cue,
-        studentTakeaway: q.takeaway
+        hint: q.hint, rationale: q.rationale, whyWrong: q.whyWrong,
+        rule: q.rule, clinicalCue: q.cue, studentTakeaway: q.takeaway
       };
     })
   };
@@ -1834,6 +1985,16 @@ function downloadPDF(){
     doc.save('NRSG3320_Exam_Report.pdf');
   }catch(err){alert('PDF generation failed. Try your browser print function.');}
 }
+
+// ── Page load: restore session or show splash ──────────────────────────────
+window.addEventListener('load', function(){
+  if(restoreSession()){
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('exam').style.display = 'block';
+    renderQuestion();
+  }
+  // else: splash is already visible by default
+});
 </script>
 </body>
 </html>
