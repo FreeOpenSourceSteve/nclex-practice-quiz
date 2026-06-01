@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NRSG 3320 Adult 1 Med-Surg Practice Exam</title>
+<title>NRSG 3320 Exam 1 Practice</title>
 <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
@@ -283,7 +283,7 @@
 
   <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.5rem">
     <button class="btn" id="start-btn" onclick="startExam()">BEGIN EXAM</button>
-    <button class="btn" onclick="exportJSON()" style="font-size:0.85rem;padding:0.75rem 1.5rem">⬇ Export JSON</button>
+    <button class="btn" onclick="exportJSON()" style="font-size:0.85rem;padding:0.75rem 1.5rem">Export JSON</button>
   </div>
 </div>
 
@@ -305,7 +305,7 @@
   <div class="options" id="q-options"></div>
 
   <div class="hint-area">
-    <button class="hint-btn" id="hint-btn" onclick="toggleHint()">💡 Hint</button>
+    <button class="hint-btn" id="hint-btn" onclick="toggleHint()">Hint for baby?</button>
     <div class="hint-box" id="hint-box"></div>
   </div>
 
@@ -333,9 +333,9 @@
   </div>
 
   <div class="results-actions">
-    <button class="btn" onclick="downloadPDF()">⬇ Download PDF Report</button>
-    <button class="btn" onclick="restartExam()">↺ Retake Exam</button>
-    <button class="btn" onclick="backToSplash()">⌂ Module Select</button>
+    <button class="btn" onclick="downloadPDF()">Download Report</button>
+    <button class="btn" onclick="restartExam()">Retake Exam</button>
+    <button class="btn" onclick="backToSplash()">Module Select</button>
   </div>
 </div>
 
