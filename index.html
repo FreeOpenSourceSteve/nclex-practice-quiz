@@ -52,7 +52,8 @@
   .splash-sub{font-size:1rem;color:var(--text-muted);margin-bottom:3rem;font-style:italic}
   .module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;max-width:900px;width:100%;margin-bottom:0}
   .module-card{
-    background:var(--surface);border:1px solid var(--border);padding:1.25rem;
+    background:var(--surface);border:1px solid var(--border);
+    padding:1.25rem 1.25rem 2.25rem 1.25rem;
     cursor:pointer;transition:all 0.2s;position:relative;user-select:none;
   }
   .module-card:hover{border-color:var(--accent);background:var(--surface2)}
@@ -63,6 +64,17 @@
   }
   .module-card.unselected{border-color:var(--border);background:var(--surface);opacity:0.5}
   .module-num{font-family:var(--font-display);font-size:2rem;color:var(--accent);display:block;margin-bottom:0.25rem}
+
+  /* Mastery indicators on module cards */
+  .mod-mastery-pct{
+    position:absolute;bottom:0.55rem;right:0.75rem;
+    font-family:var(--font-display);font-size:0.85rem;
+    color:var(--accent);opacity:0.85;line-height:1;
+  }
+  .mod-prestige-stars{
+    position:absolute;bottom:0.5rem;left:0.75rem;
+    display:flex;align-items:center;gap:2px;
+  }
 
   /* Question count sliders */
   .q-count-section{max-width:900px;width:100%;margin:1.5rem 0 2rem;}
@@ -97,6 +109,14 @@
   }
   .exam-progress{font-size:0.8rem;color:var(--text-muted)}
   .exam-score{font-size:0.85rem;color:var(--accent);font-family:var(--font-display)}
+  .header-right{display:flex;align-items:center;gap:0.9rem;}
+  .quit-btn{
+    background:transparent;border:1px solid #5a2a2a;color:#c06060;
+    font-family:var(--font-main);font-size:0.7rem;padding:0.3rem 0.7rem;
+    cursor:pointer;transition:all 0.2s;letter-spacing:0.03em;line-height:1.3;
+    white-space:nowrap;
+  }
+  .quit-btn:hover{background:#3a1515;border-color:#c06060;color:#ff9090;}
   .progress-bar{width:100%;height:2px;background:var(--border);margin-bottom:2rem}
   .progress-fill{height:100%;background:var(--accent);transition:width 0.4s}
   
@@ -153,10 +173,11 @@
   .feedback-box.correct-fb{border-color:var(--correct-text);background:var(--correct);color:var(--correct-text)}
   .feedback-box.wrong-fb{border-color:var(--wrong-text);background:var(--wrong);color:var(--wrong-text)}
   .feedback-label{font-family:var(--font-display);font-size:1.1rem;margin-bottom:0.5rem}
-  .rationale-section{margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.15)}
-  .rationale-label{font-weight:700;margin-bottom:0.4rem;display:block}
+  /* Rationale body text overridden to near-white for legibility on dark green/red backgrounds */
+  .rationale-section{margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.15);color:var(--text)}
+  .rationale-label{font-weight:700;margin-bottom:0.4rem;display:block;color:var(--text)}
   .other-options{margin-top:0.6rem}
-  .other-option{margin-bottom:0.3rem;font-size:0.85rem;opacity:0.9}
+  .other-option{margin-bottom:0.3rem;font-size:0.85rem;color:var(--text);opacity:0.92}
 
   .nav-area{display:flex;justify-content:flex-end;gap:1rem;margin-top:1rem}
 
@@ -294,7 +315,10 @@
       <div style="font-family:var(--font-display);font-size:0.9rem;color:var(--accent)">NRSG 3320 Practice Exam</div>
       <div class="exam-progress" id="progress-text">Question 1 of 40</div>
     </div>
-    <div class="exam-score" id="score-text">Score: 0 / 0</div>
+    <div class="header-right">
+      <button class="quit-btn" onclick="quitQuiz()">I'm a big quitter</button>
+      <div class="exam-score" id="score-text">Score: 0 / 0</div>
+    </div>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
 
@@ -334,7 +358,7 @@
 
   <div class="results-actions">
     <button class="btn" onclick="downloadPDF()">Download Report</button>
-    <button class="btn" onclick="restartExam()">Retake Exam</button>
+    <button class="btn" onclick="restartExam()" style="display:none !important">Retake Exam</button>
     <button class="btn" onclick="backToSplash()">Module Select</button>
   </div>
 </div>
@@ -1470,18 +1494,153 @@ let results = [];
 let hintVisible = false;
 const qCounts = {1:10, 2:10, 3:10, 4:10};
 
+// ── localStorage keys ──────────────────────────────────────────────────────
+const SESSION_KEY = 'nrsg_session';
+const MASTERY_KEY = 'nrsg_mastery';
+
+// ── Mastery helpers ────────────────────────────────────────────────────────
+function loadMastery(){
+  try {
+    const raw = localStorage.getItem(MASTERY_KEY);
+    if(raw){
+      const d = JSON.parse(raw);
+      return {
+        mastered:  d.mastered  || [],
+        incorrect: d.incorrect || [],
+        prestige:  d.prestige  || {1:0, 2:0, 3:0, 4:0}
+      };
+    }
+  } catch(e){}
+  return { mastered: [], incorrect: [], prestige: {1:0, 2:0, 3:0, 4:0} };
+}
+
+function saveMastery(m){ try{ localStorage.setItem(MASTERY_KEY, JSON.stringify(m)); }catch(e){} }
+
+// Called after every answer to update mastery in real-time
+function recordAnswer(qId, isCorrect){
+  const m = loadMastery();
+  if(isCorrect){
+    if(m.mastered.indexOf(qId) === -1) m.mastered.push(qId);
+    const ii = m.incorrect.indexOf(qId);
+    if(ii > -1) m.incorrect.splice(ii, 1);
+  } else {
+    // Only add to incorrect if NOT already mastered
+    if(m.mastered.indexOf(qId) === -1 && m.incorrect.indexOf(qId) === -1){
+      m.incorrect.push(qId);
+    }
+  }
+  saveMastery(m);
+}
+
+// Called at end of quiz: check each module; if all questions mastered → reset that module
+function checkModuleResets(){
+  const m = loadMastery();
+  if(!m.prestige) m.prestige = {1:0, 2:0, 3:0, 4:0};
+  let changed = false;
+  [1,2,3,4].forEach(function(mod){
+    const modIds = ALL_QUESTIONS
+      .map(function(q,i){ return q.module===mod ? i : -1; })
+      .filter(function(i){ return i>-1; });
+    const allMastered = modIds.every(function(id){ return m.mastered.indexOf(id)>-1; });
+    if(allMastered){
+      // Increment prestige before wiping mastered list
+      m.prestige[mod] = (m.prestige[mod] || 0) + 1;
+      modIds.forEach(function(id){
+        const mi = m.mastered.indexOf(id); if(mi>-1) m.mastered.splice(mi,1);
+        const ii = m.incorrect.indexOf(id); if(ii>-1) m.incorrect.splice(ii,1);
+      });
+      changed = true;
+      console.log('Module '+mod+' prestiged! Level: '+m.prestige[mod]);
+    }
+  });
+  if(changed) saveMastery(m);
+}
+
+// ── Session helpers ────────────────────────────────────────────────────────
+function saveSession(){
+  try{
+    const session = {
+      activeQuestionIds: activeQuestions.map(function(q){ return ALL_QUESTIONS.indexOf(q); }),
+      currentIndex: currentIndex,
+      answered: answered,
+      correct: correct,
+      results: results.map(function(r){
+        return { qId: ALL_QUESTIONS.indexOf(r.q), userCorrect: r.userCorrect, userAnswer: r.userAnswer };
+      }),
+      selectedModules: selectedModules.slice(),
+      qCounts: JSON.parse(JSON.stringify(qCounts))
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  }catch(e){}
+}
+
+function clearSession(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
+
+function restoreSession(){
+  try{
+    const raw = localStorage.getItem(SESSION_KEY);
+    if(!raw) return false;
+    const s = JSON.parse(raw);
+    // Validate IDs are all within range
+    if(!s.activeQuestionIds || !s.activeQuestionIds.length) return false;
+    const valid = s.activeQuestionIds.every(function(id){ return id>=0 && id<ALL_QUESTIONS.length; });
+    if(!valid) return false;
+
+    // Restore state
+    activeQuestions = s.activeQuestionIds.map(function(id){ return ALL_QUESTIONS[id]; });
+    currentIndex = s.currentIndex || 0;
+    answered = s.answered || 0;
+    correct = s.correct || 0;
+    results = (s.results||[]).map(function(r){
+      return { q: ALL_QUESTIONS[r.qId], userCorrect: r.userCorrect, userAnswer: r.userAnswer };
+    });
+
+    // Restore splash state (module selection + sliders)
+    if(s.selectedModules){
+      selectedModules = s.selectedModules;
+      [1,2,3,4].forEach(function(n){
+        const card = document.getElementById('mod-'+n);
+        const row = document.getElementById('slider-row-'+n);
+        if(selectedModules.indexOf(n)>-1){
+          card.classList.add('selected'); card.classList.remove('unselected');
+          row.classList.remove('disabled');
+        } else {
+          card.classList.remove('selected'); card.classList.add('unselected');
+          row.classList.add('disabled');
+        }
+      });
+    }
+    if(s.qCounts){
+      [1,2,3,4].forEach(function(n){
+        if(s.qCounts[n] !== undefined){
+          qCounts[n] = s.qCounts[n];
+          const slider = document.getElementById('slider-'+n);
+          const valEl  = document.getElementById('val-'+n);
+          if(slider) slider.value = qCounts[n];
+          if(valEl)  valEl.textContent = qCounts[n];
+        }
+      });
+      updateTotalCount();
+    }
+
+    // If the quiz is already finished, treat as complete (clear session, don't resume)
+    if(currentIndex >= activeQuestions.length) return false;
+
+    return true;
+  }catch(e){ return false; }
+}
+
+// ── Module / slider UI ─────────────────────────────────────────────────────
 function toggleModule(n){
   const card = document.getElementById('mod-'+n);
   const idx = selectedModules.indexOf(n);
   if(idx > -1){
     selectedModules.splice(idx,1);
-    card.classList.remove('selected');
-    card.classList.add('unselected');
+    card.classList.remove('selected'); card.classList.add('unselected');
     document.getElementById('slider-row-'+n).classList.add('disabled');
   } else {
     selectedModules.push(n);
-    card.classList.add('selected');
-    card.classList.remove('unselected');
+    card.classList.add('selected'); card.classList.remove('unselected');
     document.getElementById('slider-row-'+n).classList.remove('disabled');
   }
   document.getElementById('start-btn').disabled = selectedModules.length === 0;
@@ -1491,7 +1650,7 @@ function toggleModule(n){
 function toggleAllModules(){
   if(selectedModules.length === 4){
     selectedModules = [];
-    [1,2,3,4].forEach(n => {
+    [1,2,3,4].forEach(function(n){
       document.getElementById('mod-'+n).classList.remove('selected');
       document.getElementById('mod-'+n).classList.add('unselected');
       document.getElementById('slider-row-'+n).classList.add('disabled');
@@ -1499,7 +1658,7 @@ function toggleAllModules(){
     document.getElementById('start-btn').disabled = true;
   } else {
     selectedModules = [1,2,3,4];
-    [1,2,3,4].forEach(n => {
+    [1,2,3,4].forEach(function(n){
       document.getElementById('mod-'+n).classList.add('selected');
       document.getElementById('mod-'+n).classList.remove('unselected');
       document.getElementById('slider-row-'+n).classList.remove('disabled');
@@ -1520,6 +1679,7 @@ function updateTotalCount(){
   document.getElementById('total-q-count').textContent = total;
 }
 
+// ── Shuffle ────────────────────────────────────────────────────────────────
 function shuffle(arr){
   const a = arr.slice();
   for(let i = a.length-1; i > 0; i--){
@@ -1529,21 +1689,46 @@ function shuffle(arr){
   return a;
 }
 
+// ── Start exam ─────────────────────────────────────────────────────────────
 function startExam(){
+  clearSession();
+  const mastery = loadMastery();
   activeQuestions = [];
-  selectedModules.forEach(function(m){
-    const pool = shuffle(ALL_QUESTIONS.filter(function(q){ return q.module === m; }));
-    const n = Math.min(qCounts[m], pool.length);
-    for(let i=0;i<n;i++) activeQuestions.push(pool[i]);
+
+  selectedModules.forEach(function(mod){
+    // All question indices for this module
+    const modIds = ALL_QUESTIONS
+      .map(function(q,i){ return q.module===mod ? i : -1; })
+      .filter(function(i){ return i>-1; });
+
+    // Bucket 1: unseen + incorrect (not yet mastered) — equal priority, shuffled together
+    const bucket1 = shuffle(modIds.filter(function(id){
+      const isMastered  = mastery.mastered.indexOf(id)  > -1;
+      return !isMastered; // unseen OR incorrect — anything not mastered
+    }));
+
+    // Bucket 2: mastered — fallback only
+    const bucket2 = shuffle(modIds.filter(function(id){
+      return mastery.mastered.indexOf(id) > -1;
+    }));
+
+    const pool = bucket1.concat(bucket2);
+    const n = Math.min(qCounts[mod], pool.length);
+    for(let i = 0; i < n; i++) activeQuestions.push(ALL_QUESTIONS[pool[i]]);
   });
+
   activeQuestions = shuffle(activeQuestions);
   if(activeQuestions.length === 0) return;
+
   currentIndex = 0; answered = 0; correct = 0; results = [];
+  saveSession();
+
   document.getElementById('splash').style.display = 'none';
   document.getElementById('exam').style.display = 'block';
   renderQuestion();
 }
 
+// ── Render question ────────────────────────────────────────────────────────
 function renderQuestion(){
   const q = activeQuestions[currentIndex];
   const total = activeQuestions.length;
@@ -1565,7 +1750,9 @@ function renderQuestion(){
     q.options.forEach(function(opt,i){
       html += '<div class="option" id="opt-'+i+'" onclick="toggleSATA('+i+')"><span class="option-letter">'+letters[i]+'</span><span>'+opt+'</span></div>';
     });
-    optionsEl.innerHTML = html + '<div style="margin-top:0.5rem"><em style="font-size:0.8rem;color:var(--text-muted)">Select all that apply</em><br><button class="btn btn-sm" style="margin-top:0.75rem" onclick="submitSATA()">Submit Answer</button></div>';
+    optionsEl.innerHTML = html +
+      '<div style="margin-top:0.5rem"><em style="font-size:0.8rem;color:var(--text-muted)">Select all that apply</em><br>'+
+      '<button class="btn btn-sm" style="margin-top:0.75rem" onclick="submitSATA()">Submit Answer</button></div>';
   } else {
     let html = '';
     q.options.forEach(function(opt,i){
@@ -1595,6 +1782,7 @@ function toggleSATA(i){
 
 function submitSATA(){
   const q = activeQuestions[currentIndex];
+  const qId = ALL_QUESTIONS.indexOf(q);
   const correctArr = q.correct.slice().sort();
   const selectedArr = sataSelected.slice().sort();
   const isCorrect = JSON.stringify(correctArr) === JSON.stringify(selectedArr);
@@ -1609,13 +1797,16 @@ function submitSATA(){
   answered++;
   if(isCorrect) correct++;
   results.push({q:q, userCorrect:isCorrect, userAnswer:selectedArr});
+  recordAnswer(qId, isCorrect);
   document.getElementById('score-text').textContent = 'Score: '+correct+' / '+answered;
   document.getElementById('next-btn').style.display = 'block';
+  saveSession();
   if(!isCorrect) triggerJumpScare();
 }
 
 function selectAnswer(i){
   const q = activeQuestions[currentIndex];
+  const qId = ALL_QUESTIONS.indexOf(q);
   const isCorrect = i === q.correct;
   lockOptions();
   document.getElementById('opt-'+i).classList.add(isCorrect ? 'correct' : 'wrong');
@@ -1624,8 +1815,10 @@ function selectAnswer(i){
   answered++;
   if(isCorrect) correct++;
   results.push({q:q, userCorrect:isCorrect, userAnswer:i});
+  recordAnswer(qId, isCorrect);
   document.getElementById('score-text').textContent = 'Score: '+correct+' / '+answered;
   document.getElementById('next-btn').style.display = 'block';
+  saveSession();
   if(!isCorrect) triggerJumpScare();
 }
 
@@ -1663,6 +1856,7 @@ function toggleHint(){
 }
 
 function nextQuestion(){
+  saveSession();
   if(currentIndex + 1 >= activeQuestions.length){ showResults(); }
   else { currentIndex++; renderQuestion(); window.scrollTo({top:0,behavior:'smooth'}); }
 }
@@ -1686,6 +1880,9 @@ function triggerJumpScare(){
 }
 
 function showResults(){
+  clearSession();
+  checkModuleResets();
+  updateModuleCards();
   document.getElementById('exam').style.display = 'none';
   document.getElementById('results').style.display = 'block';
   const pct = Math.round((correct/answered)*100);
@@ -1732,12 +1929,14 @@ function showResults(){
 function toggleReview(i){ document.getElementById('review-body-'+i).classList.toggle('open'); }
 
 function restartExam(){
+  clearSession();
   document.getElementById('results').style.display = 'none';
   document.getElementById('splash').style.display = 'flex';
   sataSelected = [];
 }
 
 function backToSplash(){
+  clearSession();
   document.getElementById('results').style.display = 'none';
   document.getElementById('splash').style.display = 'flex';
   sataSelected = [];
@@ -1754,31 +1953,18 @@ function exportJSON(){
     modules: modNames,
     questions: ALL_QUESTIONS.map(function(q,idx){
       return {
-        id: idx+1,
-        module: q.module,
-        moduleName: modNames[q.module],
-        topic: q.topic,
-        type: q.type,
-        difficulty: q.difficulty,
-        source: q.source,
+        id: idx+1, module: q.module, moduleName: modNames[q.module],
+        topic: q.topic, type: q.type, difficulty: q.difficulty, source: q.source,
         question: q.question,
         options: q.options.map(function(text,i){
-          return {
-            letter: letters[i],
-            index: i,
-            text: text,
-            isCorrect: Array.isArray(q.correct) ? q.correct.indexOf(i)>-1 : q.correct===i
-          };
+          return { letter: letters[i], index: i, text: text,
+            isCorrect: Array.isArray(q.correct) ? q.correct.indexOf(i)>-1 : q.correct===i };
         }),
         correctAnswer: Array.isArray(q.correct) ? q.correct.map(function(i){return letters[i];}).join(', ') : letters[q.correct],
         correctIndex: q.correct,
         questionType: Array.isArray(q.correct) ? 'SATA' : 'single-best-answer',
-        hint: q.hint,
-        rationale: q.rationale,
-        whyWrong: q.whyWrong,
-        rule: q.rule,
-        clinicalCue: q.cue,
-        studentTakeaway: q.takeaway
+        hint: q.hint, rationale: q.rationale, whyWrong: q.whyWrong,
+        rule: q.rule, clinicalCue: q.cue, studentTakeaway: q.takeaway
       };
     })
   };
@@ -1834,6 +2020,98 @@ function downloadPDF(){
     doc.save('NRSG3320_Exam_Report.pdf');
   }catch(err){alert('PDF generation failed. Try your browser print function.');}
 }
+
+// ── Quit current quiz ─────────────────────────────────────────────────────
+function quitQuiz(){
+  // Mark the current unanswered question as incorrect in mastery.
+  // It was never answered — treating as incorrect ensures it surfaces
+  // in the priority pool next quiz rather than silently disappearing.
+  const currentQ = activeQuestions[currentIndex];
+  if(currentQ){
+    const qId = ALL_QUESTIONS.indexOf(currentQ);
+    if(qId > -1) recordAnswer(qId, false);
+  }
+
+  // Mastery for already-answered questions was committed live on each answer.
+  // Clear session, check resets, go home.
+  clearSession();
+  checkModuleResets();
+
+  // Reset in-memory state
+  activeQuestions = []; currentIndex = 0; answered = 0; correct = 0; results = [];
+  sataSelected = [];
+
+  document.getElementById('exam').style.display = 'none';
+  document.getElementById('splash').style.display = 'flex';
+  updateModuleCards();
+}
+
+// ── Module card mastery indicators ────────────────────────────────────────
+function makeStar(size){
+  // Returns SVG markup for a single 5-pointed star of given pixel size
+  const s = size;
+  const cx = s/2, cy = s/2;
+  const outerR = s/2, innerR = s/2 * 0.42;
+  const pts = [];
+  for(let i=0;i<10;i++){
+    const angle = (Math.PI/5)*i - Math.PI/2;
+    const r = (i%2===0) ? outerR : innerR;
+    pts.push((cx + r*Math.cos(angle)).toFixed(2)+','+(cy + r*Math.sin(angle)).toFixed(2));
+  }
+  return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 '+s+' '+s+'" xmlns="http://www.w3.org/2000/svg" style="display:block;flex-shrink:0">'+
+    '<polygon points="'+pts.join(' ')+'" fill="#d4c89a"/></svg>';
+}
+
+function updateModuleCards(){
+  const m = loadMastery();
+  const prestige = m.prestige || {1:0, 2:0, 3:0, 4:0};
+  [1,2,3,4].forEach(function(mod){
+    const card = document.getElementById('mod-'+mod);
+    if(!card) return;
+
+    // Count mastered questions for this module
+    const modIds = ALL_QUESTIONS
+      .map(function(q,i){ return q.module===mod ? i : -1; })
+      .filter(function(i){ return i>-1; });
+    const total = modIds.length; // always 20
+    const masteredCount = modIds.filter(function(id){ return m.mastered.indexOf(id)>-1; }).length;
+    const pct = total > 0 ? Math.round((masteredCount / total) * 100) : 0;
+
+    // Remove old indicators if present (re-render on update)
+    const oldPct   = card.querySelector('.mod-mastery-pct');
+    const oldStars = card.querySelector('.mod-prestige-stars');
+    if(oldPct)   oldPct.remove();
+    if(oldStars) oldStars.remove();
+
+    // Mastery % — bottom right
+    const pctEl = document.createElement('div');
+    pctEl.className = 'mod-mastery-pct';
+    pctEl.textContent = pct + '%';
+    card.appendChild(pctEl);
+
+    // Prestige stars — bottom left (only if prestige > 0)
+    const prestigeLevel = prestige[mod] || 0;
+    if(prestigeLevel > 0){
+      const starsEl = document.createElement('div');
+      starsEl.className = 'mod-prestige-stars';
+      let starsHtml = '';
+      for(let i=0; i<prestigeLevel; i++) starsHtml += makeStar(11);
+      starsEl.innerHTML = starsHtml;
+      card.appendChild(starsEl);
+    }
+  });
+}
+
+// ── Page load: restore session or show splash ──────────────────────────────
+window.addEventListener('load', function(){
+  updateModuleCards();
+  if(restoreSession()){
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('exam').style.display = 'block';
+    renderQuestion();
+  }
+  // else: splash is already visible by default
+});
 </script>
 </body>
 </html>
