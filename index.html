@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NRSG 3320 Exam 1 Practice</title>
+<title>NRSG 3320 Adult 1 Med-Surg Practice Exam</title>
 <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
@@ -50,11 +50,10 @@
   }
   .splash-title{font-family:var(--font-display);font-size:clamp(1.8rem,5vw,3.5rem);color:var(--accent);letter-spacing:0.05em;line-height:1.2;margin-bottom:0.5rem;}
   .splash-sub{font-size:1rem;color:var(--text-muted);margin-bottom:3rem;font-style:italic}
-  .module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;max-width:900px;width:100%;margin-bottom:0}
+  .module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;max-width:900px;width:100%;margin-bottom:2.5rem}
   .module-card{
-    background:var(--surface);border:1px solid var(--border);
-    padding:1.25rem 1.25rem 2.25rem 1.25rem;
-    cursor:pointer;transition:all 0.2s;position:relative;user-select:none;
+    background:var(--surface);border:1px solid var(--border);padding:1.25rem;
+    cursor:pointer;transition:all 0.2s;position:relative;
   }
   .module-card:hover{border-color:var(--accent);background:var(--surface2)}
   .module-card.selected{border-color:var(--accent);background:var(--surface2)}
@@ -62,29 +61,8 @@
     content:'✓';position:absolute;top:0.5rem;right:0.75rem;
     color:var(--accent);font-size:1.2rem;font-weight:700;
   }
-  .module-card.unselected{border-color:var(--border);background:var(--surface);opacity:0.5}
   .module-num{font-family:var(--font-display);font-size:2rem;color:var(--accent);display:block;margin-bottom:0.25rem}
-
-  /* Mastery indicators on module cards */
-  .mod-mastery-pct{
-    position:absolute;bottom:0.55rem;right:0.75rem;
-    font-family:var(--font-display);font-size:0.85rem;
-    color:var(--accent);opacity:0.85;line-height:1;
-  }
-  .mod-prestige-stars{
-    position:absolute;bottom:0.5rem;left:0.75rem;
-    display:flex;align-items:center;gap:2px;
-  }
-
-  /* Question count sliders */
-  .q-count-section{max-width:900px;width:100%;margin:1.5rem 0 2rem;}
-  .q-count-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;}
-  .q-count-row{background:var(--surface);border:1px solid var(--border);padding:1rem 1.25rem;}
-  .q-count-row.disabled{opacity:0.35;pointer-events:none;}
-  .q-count-label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;display:flex;justify-content:space-between;align-items:center;}
-  .q-count-label span{font-family:var(--font-display);font-size:1.1rem;color:var(--accent);}
-  .q-count-row input[type=range]{width:100%;accent-color:var(--accent);}
-
+  .module-name{font-size:0.85rem;color:var(--text-muted);line-height:1.4}
   .btn{
     background:transparent;border:1px solid var(--accent);color:var(--accent);
     font-family:var(--font-main);font-size:1rem;padding:0.75rem 2.5rem;
@@ -101,22 +79,13 @@
   .select-all-btn:hover{border-color:var(--accent);color:var(--accent)}
 
   /* EXAM SCREEN */
-  #exam{display:none;margin-left:5%;margin-right:5%;padding:2rem 1.5rem}
-  .question-meta{display:none!important}
+  #exam{display:none;max-width:820px;margin:0 auto;padding:2rem 1.5rem}
   .exam-header{
     display:flex;justify-content:space-between;align-items:center;
     border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:2rem;flex-wrap:wrap;gap:0.5rem;
   }
   .exam-progress{font-size:0.8rem;color:var(--text-muted)}
   .exam-score{font-size:0.85rem;color:var(--accent);font-family:var(--font-display)}
-  .header-right{display:flex;align-items:center;gap:0.9rem;}
-  .quit-btn{
-    background:transparent;border:1px solid #5a2a2a;color:#c06060;
-    font-family:var(--font-main);font-size:0.7rem;padding:0.3rem 0.7rem;
-    cursor:pointer;transition:all 0.2s;letter-spacing:0.03em;line-height:1.3;
-    white-space:nowrap;
-  }
-  .quit-btn:hover{background:#3a1515;border-color:#c06060;color:#ff9090;}
   .progress-bar{width:100%;height:2px;background:var(--border);margin-bottom:2rem}
   .progress-fill{height:100%;background:var(--accent);transition:width 0.4s}
   
@@ -173,11 +142,10 @@
   .feedback-box.correct-fb{border-color:var(--correct-text);background:var(--correct);color:var(--correct-text)}
   .feedback-box.wrong-fb{border-color:var(--wrong-text);background:var(--wrong);color:var(--wrong-text)}
   .feedback-label{font-family:var(--font-display);font-size:1.1rem;margin-bottom:0.5rem}
-  /* Rationale body text overridden to near-white for legibility on dark green/red backgrounds */
-  .rationale-section{margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.15);color:var(--text)}
-  .rationale-label{font-weight:700;margin-bottom:0.4rem;display:block;color:var(--text)}
+  .rationale-section{margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.15)}
+  .rationale-label{font-weight:700;margin-bottom:0.4rem;display:block}
   .other-options{margin-top:0.6rem}
-  .other-option{margin-bottom:0.3rem;font-size:0.85rem;color:var(--text);opacity:0.92}
+  .other-option{margin-bottom:0.3rem;font-size:0.85rem;opacity:0.9}
 
   .nav-area{display:flex;justify-content:flex-end;gap:1rem;margin-top:1rem}
 
@@ -262,50 +230,26 @@
   <div class="module-grid">
     <div class="module-card selected" id="mod-1" onclick="toggleModule(1)">
       <span class="module-num">01</span>
-      <div style="font-size:0.95rem;font-weight:700;color:var(--text)">Perioperative Care</div>
+      <div style="font-size:0.95rem;font-weight:700;margin-bottom:0.25rem;color:var(--text)">Perioperative Care</div>
+      <div class="module-name">Pre-op · Intra-op · Post-op<br>Consent · Complications</div>
     </div>
     <div class="module-card selected" id="mod-2" onclick="toggleModule(2)">
       <span class="module-num">02</span>
-      <div style="font-size:0.95rem;font-weight:700;color:var(--text)">Fluids &amp; Electrolytes</div>
+      <div style="font-size:0.95rem;font-weight:700;margin-bottom:0.25rem;color:var(--text)">Fluids & Electrolytes</div>
+      <div class="module-name">FVD · FVE · Sodium<br>Potassium · Labs</div>
     </div>
     <div class="module-card selected" id="mod-3" onclick="toggleModule(3)">
       <span class="module-num">03</span>
-      <div style="font-size:0.95rem;font-weight:700;color:var(--text)">Neurological Disorders</div>
+      <div style="font-size:0.95rem;font-weight:700;margin-bottom:0.25rem;color:var(--text)">Neurological Disorders</div>
+      <div class="module-name">Stroke · Seizure · ICP<br>Parkinson's · MS</div>
     </div>
     <div class="module-card selected" id="mod-4" onclick="toggleModule(4)">
       <span class="module-num">04</span>
-      <div style="font-size:0.95rem;font-weight:700;color:var(--text)">Cardiovascular</div>
+      <div style="font-size:0.95rem;font-weight:700;margin-bottom:0.25rem;color:var(--text)">Cardiovascular</div>
+      <div class="module-name">HTN · HF · CAD · MI<br>PAD · DVT</div>
     </div>
   </div>
-
-  <!-- Question count sliders -->
-  <div class="q-count-section">
-    <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.75rem;text-align:center;">Questions per module</div>
-    <div class="q-count-grid">
-      <div class="q-count-row" id="slider-row-1">
-        <div class="q-count-label">Module 01 <span id="val-1">10</span></div>
-        <input type="range" min="1" max="30" value="10" id="slider-1" oninput="updateSlider(1,this.value)">
-      </div>
-      <div class="q-count-row" id="slider-row-2">
-        <div class="q-count-label">Module 02 <span id="val-2">10</span></div>
-        <input type="range" min="1" max="30" value="10" id="slider-2" oninput="updateSlider(2,this.value)">
-      </div>
-      <div class="q-count-row" id="slider-row-3">
-        <div class="q-count-label">Module 03 <span id="val-3">10</span></div>
-        <input type="range" min="1" max="30" value="10" id="slider-3" oninput="updateSlider(3,this.value)">
-      </div>
-      <div class="q-count-row" id="slider-row-4">
-        <div class="q-count-label">Module 04 <span id="val-4">10</span></div>
-        <input type="range" min="1" max="30" value="10" id="slider-4" oninput="updateSlider(4,this.value)">
-      </div>
-    </div>
-    <div style="font-size:0.75rem;color:var(--text-muted);text-align:center;margin-top:0.75rem">Total: <span id="total-q-count" style="color:var(--accent);font-family:var(--font-display)">40</span> questions</div>
-  </div>
-
-  <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.5rem">
-    <button class="btn" id="start-btn" onclick="startExam()">BEGIN EXAM</button>
-    <button class="btn" onclick="exportJSON()" style="font-size:0.85rem;padding:0.75rem 1.5rem">Export JSON</button>
-  </div>
+  <button class="btn" id="start-btn" onclick="startExam()">BEGIN EXAM</button>
 </div>
 
 <!-- EXAM -->
@@ -313,12 +257,9 @@
   <div class="exam-header">
     <div>
       <div style="font-family:var(--font-display);font-size:0.9rem;color:var(--accent)">NRSG 3320 Practice Exam</div>
-      <div class="exam-progress" id="progress-text">Question 0 of 0</div>
+      <div class="exam-progress" id="progress-text">Question 1 of 40</div>
     </div>
-    <div class="header-right">
-      <button class="quit-btn" onclick="quitQuiz()">I'm a big quitter</button>
-      <div class="exam-score" id="score-text">Score: 0 / 0</div>
-    </div>
+    <div class="exam-score" id="score-text">Score: 0 / 0</div>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
 
@@ -329,7 +270,7 @@
   <div class="options" id="q-options"></div>
 
   <div class="hint-area">
-    <button class="hint-btn" id="hint-btn" onclick="toggleHint()">Hint for baby?</button>
+    <button class="hint-btn" id="hint-btn" onclick="toggleHint()">💡 Hint</button>
     <div class="hint-box" id="hint-box"></div>
   </div>
 
@@ -357,9 +298,9 @@
   </div>
 
   <div class="results-actions">
-    <button class="btn" onclick="downloadPDF()">Download Report</button>
-    <button class="btn" onclick="restartExam()" style="display:none !important">Retake Exam</button>
-    <button class="btn" onclick="backToSplash()">Module Select</button>
+    <button class="btn" onclick="downloadPDF()">⬇ Download PDF Report</button>
+    <button class="btn" onclick="restartExam()">↺ Retake Exam</button>
+    <button class="btn" onclick="backToSplash()">⌂ Module Select</button>
   </div>
 </div>
 
@@ -1421,65 +1362,7 @@ const ALL_QUESTIONS = [
   rule: "Hold beta-blockers for: HR <60, systolic BP <90-100 mmHg. Document and notify provider.",
   cue: "HR 48, BP 94/62 before carvedilol.",
   takeaway: "Hold beta-blockers if HR <60 or SBP <90-100. HR 48 = HOLD carvedilol. Notify provider."
-},
-// ============================================================
-// MODULE 1 BATCH 2 — Q41–Q50 (Levels 3 & 4 only)
-// ============================================================
-{module:1,topic:"Paralytic Ileus",type:"Complication",difficulty:"Level 3",source:"Professor Review + ATI",question:"A nurse is caring for a client on post-operative day 3 following open bowel resection. The client has not passed flatus, reports abdominal distension and nausea, and the nurse auscultates absent bowel sounds in all four quadrants. Which nursing action is the highest priority?",options:["Encourage the client to ambulate in the hallway and offer clear liquids.","Keep the client NPO, notify the provider, and anticipate insertion of a nasogastric tube for decompression.","Administer the prescribed PRN antiemetic and reassess bowel sounds in 2 hours.","Auscultate bowel sounds for a full 5 minutes in each quadrant before taking any action."],correct:1,hint:"Absent bowel sounds plus distension after bowel surgery has a specific name — and the gut needs to rest, not be stimulated.",rationale:"Absent bowel sounds, abdominal distension, and absent flatus on post-op day 3 following bowel surgery are classic signs of paralytic ileus — a cessation of peristalsis. This requires keeping the client NPO to prevent vomiting and aspiration, notifying the provider, and anticipating NG tube placement for gastric decompression to relieve distension and protect against aspiration. Encouraging oral intake or ambulation without first addressing the ileus could worsen distension and increase aspiration risk. An antiemetic alone does not treat the underlying problem.",whyWrong:["Offering clear liquids is contraindicated in paralytic ileus — the gut is not moving and oral intake will worsen distension and aspiration risk.","CORRECT — NPO + notify provider + NG tube decompression is the appropriate management of paralytic ileus.","An antiemetic treats only the symptom, not the underlying problem. The gut distension and ileus require active intervention.","Auscultation technique is important but delaying all action to re-auscultate is not the priority — the clinical picture is already clear."],rule:"Paralytic ileus: NPO + NG tube decompression + notify provider. Do not feed a non-functioning gut.",cue:"Absent bowel sounds + distension + no flatus post bowel surgery.",takeaway:"Paralytic ileus = NPO + NG decompression. Never offer food or fluids when bowel sounds are absent post-op."},
-{module:1,topic:"Surgical Risk — Medications",type:"Medication Safety",difficulty:"Level 3",source:"Lecture + Brunner & Suddarth",question:"A nurse is completing a pre-operative assessment for a client scheduled for elective hip replacement. The client reports taking warfarin, metoprolol, lisinopril, and St. John's Wort daily. Which medication finding requires the most immediate communication to the surgical team?",options:["Metoprolol — beta-blockers increase intraoperative bradycardia risk.","Lisinopril — ACE inhibitors must be held 24 hours before surgery.","Warfarin — anticoagulants significantly increase intraoperative and postoperative bleeding risk.","St. John's Wort — herbal supplements must be reported but are low priority compared to other medications."],correct:2,hint:"One of these medications directly affects the body's ability to form clots and stop bleeding — the stakes are immediate and life-threatening.",rationale:"Warfarin is an anticoagulant that significantly increases the risk of uncontrolled hemorrhage during and after surgery. It requires specific holding instructions from the provider (typically 5 days before elective surgery) and coagulation studies (INR) to confirm safe levels before proceeding. This is the highest-priority medication finding requiring immediate surgical team communication. St. John's Wort also requires reporting as it can interact with anesthetics and affect drug metabolism, but warfarin's direct hemorrhage risk is the most immediately dangerous.",whyWrong:["Metoprolol should generally be continued perioperatively to prevent rebound hypertension and tachycardia — abrupt discontinuation is more dangerous than continuation.","Lisinopril management varies by surgeon and anesthesiologist — it does not carry the same immediate hemorrhage risk as warfarin.","CORRECT — Warfarin = highest immediate risk of intraoperative hemorrhage. Must be addressed before surgery proceeds.","St. John's Wort requires reporting and should be stopped 2 weeks before surgery due to drug interactions, but it does not carry the same immediate hemorrhage risk as warfarin."],rule:"Pre-op medication priority: anticoagulants (warfarin, aspirin, clopidogrel) = highest hemorrhage risk = must communicate immediately.",cue:"Warfarin listed on pre-op medication reconciliation.",takeaway:"Warfarin before surgery = immediate priority. Must be held, INR checked, bleeding risk communicated to entire surgical team."},
-{module:1,topic:"Intraoperative Hypothermia",type:"Complication",difficulty:"Level 3",source:"Brunner & Suddarth + Lecture",question:"During a lengthy abdominal surgery, the circulating nurse notices the client's core temperature has dropped to 35.1°C (95.2°F). The client is also exhibiting ECG changes with prolonged QT interval. Which intervention should the nurse prioritize first?",options:["Apply warm blankets over the sterile field and prepare a warm IV fluid bolus.","Notify the anesthesiologist immediately and initiate active warming measures including warming blankets and warm IV fluids.","Document the temperature and continue to monitor, as mild hypothermia is expected during surgery.","Increase the ambient operating room temperature to 75°F and continue the procedure."],correct:1,hint:"Hypothermia plus ECG changes means two body systems are being affected — who needs to know about this right now?",rationale:"Intraoperative hypothermia (core temp below 36°C/96.8°F) is a recognized complication of surgery caused by cool OR temperatures, open body cavities, and anesthetic-induced impaired thermoregulation. A core temp of 35.1°C with QT prolongation on ECG indicates the hypothermia is affecting cardiac conduction — this is a developing emergency. The anesthesiologist must be notified immediately because they manage the patient's physiologic status intraoperatively, and active warming must be initiated urgently. Applying blankets over the sterile field violates sterile technique.",whyWrong:["Applying blankets over the sterile field violates sterile technique — this is a significant intraoperative safety violation.","CORRECT — Immediate notification of anesthesiologist + active warming = correct response to intraoperative hypothermia with ECG changes.","A temperature of 35.1°C with ECG changes is not 'expected' — this is a clinically significant complication requiring immediate intervention.","Increasing room temperature alone is insufficient to correct core hypothermia and does not address the cardiac effects already present."],rule:"Intraoperative hypothermia with ECG changes = immediate anesthesiologist notification + active warming. Sterile field must never be contaminated.",cue:"Core temp 35.1°C + prolonged QT interval in the OR.",takeaway:"Intraoperative hypothermia + ECG changes = emergency. Notify anesthesiologist immediately. NEVER violate sterile field."},
-{module:1,topic:"Urinary Retention Post-op",type:"Clinical Judgment",difficulty:"Level 3",source:"Professor Review + ATI",question:"A nurse is caring for a client 9 hours after a laparoscopic appendectomy. The client has not voided since returning from the OR and reports lower abdominal pressure and discomfort. Bladder scan reveals 550 mL of urine. Which sequence of interventions is most appropriate?",options:["Encourage the client to drink fluids, ambulate to the bathroom, and wait another hour before reassessing.","Insert an indwelling Foley catheter immediately per post-op protocol.","Assist the client to ambulate to the bathroom, provide privacy, and run water; if voiding does not occur, perform straight catheterization.","Administer a prescribed PRN urinary antispasmodic and reassess in 30 minutes."],correct:2,hint:"The least-invasive approach is tried first — but the bladder scan result tells you this cannot wait much longer.",rationale:"Post-operative urinary retention is common due to anesthesia effects, opioid use, and sympathetic nervous system suppression. A bladder volume of 550 mL with 9 hours of no voiding and symptoms of distension indicates significant retention requiring intervention. The correct approach is least-to-most invasive: first assist with ambulation, positioning (standing or commode), and running water to stimulate voiding. If this fails, straight (in-and-out) catheterization relieves retention without the infection risk of an indwelling catheter. An indwelling Foley is reserved for cases requiring ongoing monitoring or when repeated retention occurs.",whyWrong:["Waiting another hour with 550 mL already retained risks bladder damage, infection, and worsening discomfort — the retention needs active intervention now.","An indwelling Foley catheter is not the first intervention — it carries greater infection risk. Less invasive measures should be tried first.","CORRECT — Ambulate, provide privacy, run water first; if ineffective, straight catheterization is the next step.","Antispasmodics treat bladder spasm/overactivity — they do not relieve post-op retention caused by anesthesia and opioids."],rule:"Post-op urinary retention: least invasive first (ambulate, privacy, running water) → straight cath → indwelling Foley only if needed.",cue:"9 hours post-op, no void, bladder scan 550 mL.",takeaway:"Post-op retention: try ambulation + positioning + running water FIRST. Straight cath if needed. Foley is last resort."},
-{module:1,topic:"Anesthesia Awareness",type:"Clinical Judgment",difficulty:"Level 4",source:"Brunner & Suddarth + Lecture",question:"A client is brought to the PACU following a 4-hour general anesthesia procedure. The client is trembling, appears wide-eyed and fearful, and immediately grabs the nurse's hand saying, 'I was awake. I could hear everything but I could not move or speak.' Which response by the nurse is most appropriate?",options:["Tell the client that this is impossible because anesthesia prevents all awareness and they were likely dreaming.","Acknowledge the client's experience, stay present, listen without dismissing their account, and notify the anesthesiologist and the care team.","Administer a prescribed benzodiazepine immediately to reduce the client's agitation and anxiety.","Document that the client is confused and disoriented in the immediate post-anesthesia period and continue monitoring."],correct:1,hint:"What the patient is describing has a clinical name — and dismissing it causes additional harm.",rationale:"Anesthesia awareness — the experience of consciousness during general anesthesia while being unable to move or communicate — is a recognized, traumatic intraoperative complication. The client's account is credible and must never be dismissed. The correct immediate response is to validate and acknowledge the experience, remain with the client, listen without minimizing, and notify the anesthesiologist and care team so the event can be documented, investigated, and appropriate psychological support (including trauma counseling) can be initiated. Dismissing the experience or attributing it to confusion causes psychological harm and violates patient trust.",whyWrong:["Telling the client it is impossible and they were dreaming is dismissive, inaccurate, and harmful — anesthesia awareness is a documented clinical phenomenon.","CORRECT — Acknowledge the experience, stay present, notify anesthesiologist, initiate documentation and support.","Administering a benzodiazepine without first acknowledging the experience and notifying the team addresses anxiety before the underlying safety event — and sedating the client could interfere with their ability to describe the event accurately.","Documenting confusion without recognizing the clinical significance of the patient's account misses a serious anesthesia complication and fails to initiate appropriate follow-up."],rule:"Anesthesia awareness is real and traumatic. Validate the experience, notify the team, initiate support. Never dismiss. Document as a patient safety event.",cue:"Patient reports being aware but unable to move during surgery.",takeaway:"Anesthesia awareness = validate, notify anesthesiologist, document safety event, initiate psychological support. Never dismiss."},
-{module:1,topic:"Post-op Pulmonary Embolism",type:"Complication",difficulty:"Level 4",source:"Professor Review + ATI + Brunner & Suddarth",question:"A nurse is caring for a client on post-operative day 2 following a total knee replacement. The client suddenly reports sharp chest pain, is visibly anxious and restless, respiratory rate is 28 breaths/min, SpO2 has dropped from 97% to 88%, and HR is 118 beats/min. What should the nurse do first?",options:["Reassess pain and administer the prescribed opioid analgesic for post-operative chest discomfort.","Notify the surgeon of possible wound complications causing referred chest pain.","Position the client with the head of the bed elevated, apply high-flow oxygen, establish IV access, and activate the rapid response team immediately.","Perform a 12-lead ECG and prepare the patient for urgent cardiac catheterization."],correct:2,hint:"Sudden chest pain plus falling oxygen saturation plus tachycardia plus tachypnea on post-op day 2 of a major orthopedic surgery — one specific diagnosis explains every finding.",rationale:"This presentation is classic for pulmonary embolism (PE): sudden pleuritic chest pain, acute dyspnea, hypoxia (SpO2 88%), tachycardia, and tachypnea in the context of post-orthopedic surgery (a major DVT/PE risk factor). PE is immediately life-threatening. The nurse's first actions are ABCs: elevate the HOB, apply high-flow oxygen to correct hypoxia, establish IV access, and activate the rapid response team for emergent evaluation and management. Administering opioids for what is likely a PE is unsafe and delays life-saving treatment.",whyWrong:["Administering opioids for this presentation masks a life-threatening emergency and causes respiratory depression — this is unsafe.","Wound-related referred chest pain does not explain SpO2 88%, HR 118, or RR 28 — the full clinical picture points to PE, not a wound complication.","CORRECT — HOB up + high-flow O2 + IV access + rapid response = correct simultaneous priorities for suspected PE.","A 12-lead ECG is supportive but not the first action — securing the airway and oxygenation come before diagnostic workup."],rule:"Suspected PE: ABCs first — O2, HOB elevation, IV access, rapid response activation. SpO2 88% is immediately life-threatening.",cue:"Post-op day 2 orthopedic surgery + sudden chest pain + SpO2 88% + tachycardia + tachypnea.",takeaway:"Post-op sudden chest pain + hypoxia + tachycardia = PE until proven otherwise. O2 + HOB + IV + rapid response STAT."},
-{module:1,topic:"Pre-op Diabetes Management",type:"Medication Safety",difficulty:"Level 3",source:"Brunner & Suddarth + ATI",question:"A nurse is reviewing pre-operative orders for a client with type 2 diabetes scheduled for a morning cholecystectomy. The client's home medications include metformin and insulin glargine. The NPO order begins at midnight. Which pre-operative medication instruction is most important to clarify with the provider before the morning of surgery?",options:["Metformin should be held on the morning of surgery due to the risk of lactic acidosis, particularly with contrast use or renal hypoperfusion.","Insulin glargine should be doubled on the night before surgery to prevent hyperglycemia from surgical stress.","Both medications should be administered as usual on the morning of surgery with a small sip of water.","Metformin dose should be reduced by half on the day of surgery to prevent GI side effects from NPO status."],correct:0,hint:"One of these medications carries a specific risk when the kidneys may be underperfused during surgery or when contrast agents are used.",rationale:"Metformin must be held before surgery because it is associated with lactic acidosis when renal perfusion is compromised — a real risk during anesthesia and surgery. Metformin is also contraindicated when IV contrast media may be used. The standard guideline is to hold metformin 24–48 hours before surgery and until adequate renal function is confirmed post-operatively. Insulin glargine (long-acting basal insulin) should typically be continued at a reduced dose (50–80% of usual) the night before surgery — not doubled, as doubling would cause hypoglycemia while the patient is NPO.",whyWrong:["CORRECT — Metformin must be held pre-operatively due to risk of lactic acidosis from renal hypoperfusion or contrast use.","Doubling insulin glargine while the patient is NPO would cause severe hypoglycemia — this is dangerous and incorrect.","Administering both medications on the morning of surgery ignores the NPO status and the specific contraindications for metformin during surgery.","Reducing metformin by half is not the standard recommendation — the medication should be held entirely, not dose-reduced."],rule:"Pre-op: HOLD metformin (lactic acidosis risk). Basal insulin: reduce dose, do not eliminate. Never double insulin when NPO.",cue:"Metformin + surgery + possible contrast + NPO status.",takeaway:"Hold metformin before surgery — lactic acidosis risk with renal hypoperfusion. Reduce (do not double) basal insulin when NPO."},
-{module:1,topic:"Post-op Wound Infection",type:"Assessment",difficulty:"Level 3",source:"Lecture + ATI",question:"A nurse assesses a client's abdominal surgical wound on post-operative day 5 and documents: incision edges approximated, erythema extending 3 cm beyond wound edges bilaterally, wound warm to touch, seropurulent drainage present, and client's temperature is 38.9°C (102°F). Which action is most appropriate?",options:["Apply a dry sterile dressing, document findings, and reassess in 8 hours per routine wound care protocol.","Notify the provider immediately, obtain a wound culture as prescribed, and document all findings.","Irrigate the wound with hydrogen peroxide to clean the drainage and apply an antibiotic ointment.","Reassure the client that this degree of redness is an expected inflammatory response for post-op day 5."],correct:1,hint:"There is a difference between normal post-operative wound inflammation and infection — the temperature and purulent drainage tell you which this is.",rationale:"The findings — extending erythema (>2 cm is concerning), warmth, seropurulent drainage, and fever of 38.9°C — are classic signs of surgical site infection (SSI), not normal post-operative inflammation. Expected findings include mild erythema at wound edges within the first 48–72 hours and clear serosanguineous drainage. Purulent drainage, fever, and spreading redness on day 5 require immediate provider notification, wound culture (to identify the causative organism for antibiotic selection), and likely wound opening and irrigation. Hydrogen peroxide is cytotoxic to healing tissue and should not be used.",whyWrong:["Routine wound care and reassessment are inadequate for signs of active surgical site infection — provider notification and culture are required.","CORRECT — Notify provider + obtain wound culture + document: these are the priority actions for surgical site infection.","Hydrogen peroxide is cytotoxic and destroys granulation tissue — it is contraindicated for wound care.","Erythema extending 3 cm with purulent drainage and fever is NOT expected — this is a wound infection, not normal inflammation."],rule:"Post-op wound infection signs: spreading erythema, warmth, purulent drainage, fever → notify provider + wound culture immediately.",cue:"Seropurulent drainage + 3 cm erythema + fever 38.9°C on post-op day 5.",takeaway:"Purulent drainage + fever + spreading redness = SSI. Notify provider + culture wound. Not routine care."},
-{module:1,topic:"Positioning Intraoperative",type:"Safety",difficulty:"Level 3",source:"Brunner & Suddarth",question:"A circulating nurse is positioning an older adult client on the operating table in the lithotomy position for a prolonged pelvic surgery expected to last 4 hours. Which nursing action is most important to prevent injury?",options:["Raise both legs simultaneously into the stirrups as quickly as possible to minimize the time the client is unsecured.","Pad all bony prominences and pressure points, ensure the legs are elevated simultaneously, and assess neurovascular status after positioning.","Place the client in lithotomy position and rely on the surgical team to reposition if the client shows signs of discomfort.","Apply a warming blanket over the client's torso only, as the lower extremities do not require thermal protection in lithotomy position."],correct:1,hint:"Long surgeries in unusual positions create risks that are entirely preventable with careful, thorough positioning technique.",rationale:"Prolonged lithotomy positioning in older adults carries significant risks including nerve damage (especially common peroneal nerve), pressure injury at bony prominences, DVT from venous stasis, and hemodynamic compromise from leg elevation. Key interventions include: padding all bony prominences (sacrum, heels, fibular head), raising and lowering both legs simultaneously to prevent hip/spine injury, assessing peripheral neurovascular status post-positioning, and monitoring for hypothermia. Rushing the positioning process or failing to assess neurovascular status increases injury risk significantly.",whyWrong:["Raising legs quickly or asymmetrically causes hip dislocation, spine strain, and hemodynamic instability — this is incorrect technique.","CORRECT — Pad bony prominences + simultaneous leg elevation + neurovascular assessment = correct positioning safety practice.","Relying on the surgical team to reposition during an active surgery is impractical and dangerous — positioning injury prevention must occur before the procedure begins.","Lower extremities in lithotomy are at high risk for hypothermia due to reduced perfusion and exposure — they require thermal protection as well."],rule:"Intraoperative lithotomy positioning: pad all prominences, elevate/lower legs simultaneously, assess neurovascular status. Prolonged position = high injury risk.",cue:"Older adult, 4-hour surgery, lithotomy position.",takeaway:"Lithotomy position: pad ALL bony prominences, raise BOTH legs together, check neurovascular status. Long position = nerve damage + pressure injury risk."},
-{module:1,topic:"Client Selection — Priority",type:"Clinical Judgment",difficulty:"Level 4",source:"ATI + Professor Review",question:"A nurse working in the pre-operative holding area receives report on four clients. Which client should the nurse assess first?",options:["A 52-year-old scheduled for elective hernia repair who reports mild anxiety and asks to speak with the chaplain.","A 68-year-old scheduled for bowel resection who reports a blood pressure of 188/106 mmHg taken 10 minutes ago and a current headache.","A 45-year-old scheduled for laparoscopic cholecystectomy whose consent form was signed 20 minutes ago and is awaiting transport.","A 70-year-old who has completed pre-op preparation and is waiting for the surgical team to arrive for hip arthroplasty."],correct:1,hint:"One of these findings could indicate the surgery should not proceed — and it involves a system that, if untreated, could cause an intraoperative catastrophe.",rationale:"A BP of 188/106 mmHg with a headache in an older adult scheduled for major bowel surgery is the highest priority. Severely elevated blood pressure in the pre-operative period is a surgical risk that must be addressed before the procedure proceeds — it increases the risk of intraoperative hemorrhage, stroke, and cardiac events. The headache is a potential symptom of hypertensive urgency/emergency. The nurse must assess this client immediately and notify the surgical team and anesthesiologist so a decision can be made about proceeding with or postponing surgery.",whyWrong:["Mild anxiety with a chaplain request is a psychosocial need — important, but not an immediate physiologic safety priority.","CORRECT — BP 188/106 + headache pre-op = potential hypertensive urgency. Must assess and notify surgical team immediately.","A signed consent and routine pre-op preparation indicate this client is stable and ready — not a priority emergency.","A stable client waiting for the surgical team is expected and routine — no immediate safety concern identified."],rule:"Pre-op: unstable physiology (severely elevated BP, acute pain, new symptoms) takes priority over stable, routine pre-op waiting clients.",cue:"BP 188/106 + headache in pre-op holding area.",takeaway:"Pre-op: new/worsening physiologic instability = assess FIRST. BP 188/106 + headache could cancel surgery and cause intraoperative catastrophe."},
-
-// ============================================================
-// MODULE 2 BATCH 2 — Q51–Q60 (Levels 3 & 4 only)
-// ============================================================
-{module:2,topic:"Third-Spacing",type:"Clinical Judgment",difficulty:"Level 4",source:"Brunner & Suddarth + ATI",question:"A nurse is caring for a client with severe pancreatitis on day 2 of admission. Despite receiving 3 liters of IV normal saline over the past 12 hours, the client has: BP 88/54 mmHg, HR 126 beats/min, urine output 15 mL/hr, and 3+ pitting edema of both lower extremities. The client appears pale and diaphoretic. How should the nurse interpret these findings?",options:["The client is experiencing fluid volume excess — the IV fluid rate should be reduced immediately.","The edema indicates the IV fluids are working correctly and fluid is moving to where it is needed.","The client is experiencing third-spacing — fluid is shifting into non-functional spaces causing simultaneous intravascular deficit and tissue edema.","The vital sign changes are expected in pancreatitis and do not require immediate intervention."],correct:2,hint:"How can a patient have edema everywhere but still be in shock? Think about where the fluid has gone.",rationale:"Third-spacing occurs when fluid shifts out of the intravascular space into a non-functional third space (such as the peritoneum, interstitial tissues, or retroperitoneum) where it is unavailable for circulation. In severe pancreatitis, massive third-spacing is common. The result is simultaneous intravascular volume depletion (hypotension, tachycardia, oliguria, pallor, diaphoresis) and visible tissue edema. This is NOT fluid volume excess — the patient is hemodynamically in shock despite the edema. The nurse must recognize this pattern and notify the provider urgently.",whyWrong:["Reducing IV fluids in a hemodynamically unstable patient with oliguria and hypotension would worsen circulatory collapse — this is the opposite of what is needed.","Edema in this context represents fluid trapped in non-functional spaces, not fluid that is 'working correctly' — the intravascular space remains depleted.","CORRECT — Third-spacing explains the paradox of edema plus shock. Fluid is present in the body but not available to circulation.","BP 88/54, HR 126, and urine output 15 mL/hr are signs of distributive/hypovolemic shock — these findings require urgent intervention, not watchful waiting."],rule:"Third-spacing: edema + simultaneous hemodynamic instability = fluid in wrong compartment. Does NOT mean fluid overload. Treat the intravascular deficit.",cue:"Edema + hypotension + tachycardia + oliguria despite IV fluids in pancreatitis.",takeaway:"Third-spacing = edema everywhere BUT patient is in shock. Fluid trapped in non-functional spaces. Treat the intravascular deficit, not the edema."},
-{module:2,topic:"Magnesium Toxicity",type:"Medication Safety",difficulty:"Level 4",source:"ATI + Brunner & Suddarth",question:"A nurse is monitoring a client receiving IV magnesium sulfate for severe hypomagnesemia. The client's deep tendon reflexes are absent, respirations are 9 breaths/min, and BP is 86/52 mmHg. Which action should the nurse take first?",options:["Slow the magnesium sulfate infusion rate to half and reassess in 30 minutes.","Stop the magnesium sulfate infusion immediately and prepare to administer IV calcium gluconate.","Notify the provider and document the findings while continuing the current infusion rate.","Administer a prescribed IV fluid bolus of 500 mL NS to address the hypotension."],correct:1,hint:"Absent deep tendon reflexes is the warning sign that magnesium toxicity is approaching respiratory arrest — one drug directly reverses magnesium's effects.",rationale:"Magnesium toxicity presents in a predictable sequence: loss of deep tendon reflexes (earliest warning sign), followed by respiratory depression, then cardiac arrest. A respiratory rate of 9 breaths/min with absent DTRs indicates severe, life-threatening magnesium toxicity. The nurse must immediately STOP the infusion and administer IV calcium gluconate — calcium is the direct antidote for magnesium toxicity as it antagonizes magnesium's effects on neuromuscular transmission. Slowing the infusion is insufficient when toxicity has already progressed to respiratory compromise.",whyWrong:["Slowing the infusion is insufficient when respiratory depression is already present — the infusion must be stopped completely.","CORRECT — Stop infusion + IV calcium gluconate = immediate treatment for magnesium toxicity with respiratory depression.","Documenting while continuing the infusion when the patient has a RR of 9 and absent DTRs is unsafe — this is an emergency requiring immediate action.","A fluid bolus addresses hypotension but does not reverse the magnesium toxicity that is causing respiratory depression — calcium gluconate is the priority antidote."],rule:"Magnesium toxicity: absent DTRs → respiratory depression → cardiac arrest. STOP infusion + calcium gluconate (antidote). Monitor DTRs throughout infusion.",cue:"Absent DTRs + RR 9 + hypotension during magnesium infusion.",takeaway:"Magnesium toxicity = STOP infusion + calcium gluconate. Absent DTRs = early warning. RR <12 = emergency."},
-{module:2,topic:"Hypocalcemia Post-Thyroidectomy",type:"Assessment",difficulty:"Level 3",source:"ATI + Brunner & Suddarth",question:"A nurse is caring for a client who had a thyroidectomy 24 hours ago. The client reports perioral numbness and tingling in the fingers and toes. When the nurse taps over the facial nerve anterior to the ear, the client's lip twitches. Which is the nurse's priority action?",options:["Reassure the client that postoperative paresthesias are common and will resolve on their own.","Document the presence of Chvostek's sign and notify the provider immediately for calcium level and potential calcium replacement.","Administer the prescribed oral calcium supplement and assess again in 2 hours.","Reposition the client and elevate the head of the bed to reduce post-thyroidectomy edema."],correct:1,hint:"The facial nerve tapping test has a name — and it signals a specific electrolyte emergency that is a recognized complication of thyroid surgery.",rationale:"Chvostek's sign (lip/facial twitching when tapping the facial nerve) combined with perioral numbness and digital tingling indicates hypocalcemia — a life-threatening complication of thyroidectomy caused by inadvertent removal or damage to the parathyroid glands during surgery. Parathyroid hormone (PTH) regulates calcium; without PTH, serum calcium drops rapidly. This is a medical emergency requiring immediate provider notification, calcium level measurement, and IV calcium replacement if critically low. Without treatment, hypocalcemia progresses to laryngospasm, seizures, and cardiac arrest.",whyWrong:["Reassuring the client is dangerous — Chvostek's sign plus paresthesias after thyroidectomy is a recognized emergency, not a benign finding.","CORRECT — Chvostek's sign = hypocalcemia after thyroidectomy = notify provider immediately + check calcium + prepare IV calcium.","Oral calcium supplements are appropriate for mild, chronic hypocalcemia — but post-thyroidectomy acute hypocalcemia with neuromuscular signs requires IV replacement and urgent evaluation.","Repositioning addresses comfort but does not address the life-threatening electrolyte emergency indicated by Chvostek's sign."],rule:"Post-thyroidectomy + Chvostek's sign + perioral/digital paresthesias = acute hypocalcemia emergency. Notify provider + check calcium + prepare IV calcium.",cue:"Chvostek's sign + paresthesias after thyroidectomy.",takeaway:"Post-thyroidectomy + Chvostek's sign = hypocalcemia from parathyroid damage. Notify provider STAT. Can progress to laryngospasm and cardiac arrest."},
-{module:2,topic:"SIADH Management",type:"Clinical Judgment",difficulty:"Level 4",source:"ATI + Brunner & Suddarth",question:"A nurse is caring for a client with a brain tumor who has developed SIADH (syndrome of inappropriate antidiuretic hormone). The client's serum sodium is 122 mEq/L, urine output has decreased to 18 mL/hr, and urine specific gravity is 1.030. The client is restless and confused. Which combination of orders would the nurse anticipate from the provider?",options:["IV normal saline at 200 mL/hr, increase oral fluid intake to 3 L/day, furosemide IV","Fluid restriction to 800–1000 mL/day, hypertonic saline 3% IV administered slowly, seizure precautions","Hypotonic saline 0.45% IV, encourage oral water intake, sodium restriction diet","Free water IV bolus, spironolactone PO, and liberalize fluid intake"],correct:1,hint:"SIADH means the body is holding onto water and diluting sodium — the treatment logically reverses both of those processes.",rationale:"SIADH is characterized by excess ADH causing water retention, dilutional hyponatremia, concentrated urine despite low serum sodium, and decreased urine output. With Na 122 mEq/L and neurological symptoms (confusion, restlessness), this is severe symptomatic hyponatremia. Treatment includes: fluid restriction (to reduce the total water load), slow administration of hypertonic saline (3% NaCl) to correct the sodium deficit, and seizure precautions due to seizure risk at Na <125. Correction must be gradual to prevent osmotic demyelination syndrome. Encouraging oral fluids or giving free water would worsen the hyponatremia.",whyWrong:["Normal saline at high rates and increased oral intake would worsen hyponatremia in SIADH by adding more free water — increasing oral fluids is contraindicated.","CORRECT — Fluid restriction + slow hypertonic saline + seizure precautions = correct management of severe symptomatic SIADH.","Hypotonic saline and encouraging oral water would dramatically worsen hyponatremia in SIADH — this is the opposite of correct treatment.","Free water IV bolus would be immediately life-threatening in a patient with Na 122 — this is absolutely contraindicated."],rule:"SIADH: fluid restriction + hypertonic saline SLOWLY + seizure precautions. Never give free water or hypotonic fluids.",cue:"SIADH + Na 122 + concentrated urine + neurological symptoms.",takeaway:"SIADH = dilutional hyponatremia = RESTRICT fluids + hypertonic saline slowly. Never add more free water. Correct slowly to prevent brain damage."},
-{module:2,topic:"Digitalis Toxicity and Hypokalemia",type:"Medication Safety",difficulty:"Level 4",source:"ATI + Brunner & Suddarth",question:"A client with heart failure is prescribed digoxin 0.125 mg daily and furosemide 40 mg daily. The morning labs show potassium 3.0 mEq/L. The client reports nausea, visual changes (seeing yellow-green halos), and the cardiac monitor shows new-onset PVCs. Which nursing action is the priority?",options:["Administer the digoxin as scheduled and the furosemide as prescribed, then recheck potassium levels in 4 hours.","Hold the digoxin and furosemide, notify the provider immediately, and prepare for potassium replacement.","Administer the furosemide but hold the digoxin, and encourage the client to eat a high-potassium meal.","Administer the digoxin with a full glass of juice and monitor the client for 30 minutes after administration."],correct:1,hint:"Three things are happening simultaneously that are all related to each other — and one of them is a toxicity you should recognize by its visual symptom.",rationale:"This client is exhibiting classic digoxin toxicity: nausea, yellow-green halos (visual changes), and PVCs. Hypokalemia (K+ 3.0 mEq/L) dramatically potentiates digoxin toxicity because potassium and digoxin compete for the same binding site on the Na-K-ATPase pump — when potassium is low, digoxin's effect is amplified even at therapeutic levels. Both the digoxin AND furosemide must be held (furosemide worsens hypokalemia), the provider must be notified immediately, and potassium replacement is urgent. Administering either medication in this situation could precipitate life-threatening dysrhythmias.",whyWrong:["Administering both medications is dangerous — digoxin toxicity is already present, and furosemide would worsen hypokalemia further amplifying the toxicity.","CORRECT — Hold both drugs (digoxin + furosemide) + notify provider + prepare K+ replacement. Hypokalemia amplifies digoxin toxicity.","Holding digoxin but giving furosemide is partially correct but incomplete — furosemide worsens the hypokalemia that is driving the toxicity.","Administering digoxin in a patient showing signs of toxicity (visual halos, PVCs) with hypokalemia is extremely dangerous and contraindicated."],rule:"Hypokalemia + digoxin = toxic combination. Yellow-green halos + PVCs = digoxin toxicity. Hold BOTH digoxin AND furosemide. Correct potassium urgently.",cue:"K+ 3.0 + yellow-green halos + PVCs in patient on digoxin + furosemide.",takeaway:"Yellow-green halos + PVCs on digoxin = TOXICITY. Hypokalemia amplifies digoxin. HOLD digoxin AND furosemide. Replace potassium urgently."},
-{module:2,topic:"Fluid Volume Excess — Priority Client",type:"Clinical Judgment",difficulty:"Level 4",source:"ATI + Lecture",question:"A nurse is triaging four clients on a medical-surgical unit. Which client requires the nurse's most immediate assessment?",options:["A client with chronic kidney disease and documented fluid volume excess whose weight is 0.5 kg above yesterday's baseline.","A client with heart failure who reports increased ankle swelling since this morning and is requesting a diuretic.","A client with fluid volume excess whose SpO2 has dropped to 86% on room air and who is coughing up pink frothy sputum.","A client who is NPO after midnight for a morning procedure and is requesting a glass of water."],correct:2,hint:"SpO2 86% plus a very specific type of sputum tells you exactly what is happening in the alveoli right now.",rationale:"SpO2 86% plus pink frothy sputum is the hallmark of acute pulmonary edema — fluid is filling the alveoli and gas exchange is critically impaired. This client is in immediate danger of respiratory failure and death. Pink frothy sputum specifically indicates alveolar flooding from cardiac-origin pulmonary edema. Immediate interventions: HOB elevation, high-flow oxygen, notify provider, prepare for morphine and diuretics IV. The other clients have concerning but stable or lower-acuity findings.",whyWrong:["A 0.5 kg weight gain above baseline in a CKD patient with documented FVE is a trend to monitor but not an immediate emergency.","Increased ankle swelling in heart failure requesting a diuretic is an urgent clinical concern but the patient is stable and communicating — not immediately life-threatening.","CORRECT — SpO2 86% + pink frothy sputum = acute pulmonary edema = respiratory emergency. Assess immediately.","An NPO patient requesting water is a comfort and compliance issue — not a physiologic emergency."],rule:"Pink frothy sputum + SpO2 86% = acute pulmonary edema = immediate respiratory emergency. Always the highest priority.",cue:"SpO2 86% + pink frothy sputum = alveolar flooding.",takeaway:"Pink frothy sputum = pulmonary edema = respiratory failure imminent. SpO2 86% = assess IMMEDIATELY. This beats every other finding."},
-{module:2,topic:"IV Fluid Overload",type:"Complication",difficulty:"Level 3",source:"ATI + Brunner & Suddarth",question:"A nurse is infusing 1000 mL of 0.9% NS at 125 mL/hr for a 78-year-old client with a history of heart failure. Two hours into the infusion, the client becomes short of breath, develops a productive cough, and new crackles are audible bilaterally. SpO2 is 91%. Which action should the nurse take first?",options:["Slow the infusion to 50 mL/hr and continue monitoring the client.","Stop the infusion, elevate the head of the bed, apply supplemental oxygen, and notify the provider immediately.","Reposition the client in a lateral decubitus position and complete a full head-to-toe assessment.","Increase the oxygen delivery and wait for the infusion to complete before calling the provider."],correct:1,hint:"A patient with heart failure is developing fluid overload from an IV infusion — what is the immediate safety action with the infusion itself?",rationale:"This client is developing fluid overload/pulmonary edema as a direct result of the IV infusion. The nurse must immediately STOP the infusion (removing the source of harm), elevate the HOB to reduce preload and improve respiratory mechanics, apply supplemental oxygen to correct the SpO2 of 91%, and notify the provider for emergency management (likely IV diuretics). Slowing the infusion is insufficient — the harm is ongoing and the patient's respiratory status is deteriorating. A patient with known heart failure requires careful fluid monitoring.",whyWrong:["Slowing the infusion continues to add fluid to an already overloaded system — the infusion must be stopped completely.","CORRECT — Stop infusion + HOB elevation + supplemental O2 + notify provider. Removing the source of harm is the first action.","Lateral decubitus positioning does not address the respiratory emergency; HOB elevation is the correct position for dyspnea.","Waiting for the infusion to complete when the patient is developing pulmonary edema is unsafe and delays urgent intervention."],rule:"IV fluid overload in heart failure: STOP the infusion first, then HOB elevation, O2, notify provider. Stopping the source of harm is priority.",cue:"Dyspnea + crackles + SpO2 91% during IV infusion in HF patient.",takeaway:"Dyspnea developing during IV infusion in HF patient = STOP infusion immediately. HOB up + O2 + notify provider."},
-{module:2,topic:"Hyponatremia — Medication Cause",type:"Medication Safety",difficulty:"Level 3",source:"ATI + Brunner & Suddarth",question:"A nurse is reviewing the medication list for a client admitted with a serum sodium of 127 mEq/L, confusion, and nausea. The client's home medications include hydrochlorothiazide, sertraline, and omeprazole. Which medication is most likely contributing to the hyponatremia and requires immediate provider review?",options:["Omeprazole — proton pump inhibitors are known to cause electrolyte imbalances including sodium depletion.","Sertraline — SSRIs can cause SIADH leading to dilutional hyponatremia, particularly in older adults.","Hydrochlorothiazide — thiazide diuretics are the most common medication cause of hyponatremia.","Both hydrochlorothiazide and sertraline should be flagged because both can independently cause hyponatremia."],correct:3,hint:"Two of these medications have well-known independent mechanisms for causing low sodium — and this patient is on both.",rationale:"Both hydrochlorothiazide (a thiazide diuretic) and sertraline (an SSRI) are independent, well-documented causes of hyponatremia. Thiazides impair urinary dilution by blocking sodium-chloride cotransport in the distal tubule. SSRIs can cause SIADH — syndrome of inappropriate ADH secretion — leading to water retention and dilutional hyponatremia. The combination significantly amplifies risk, particularly in older adults. Both medications must be flagged for provider review. Omeprazole does not have a significant direct role in sodium regulation.",whyWrong:["Omeprazole (a PPI) is not a primary cause of hyponatremia and does not directly affect sodium regulation — this is not the priority finding.","Sertraline can cause SIADH and is a correct partial answer, but it is incomplete without identifying hydrochlorothiazide as a simultaneous contributor.","Hydrochlorothiazide is correct and is the most common medication cause of hyponatremia, but the answer is incomplete without also flagging sertraline.","CORRECT — Both HCTZ (sodium wasting) and sertraline (SIADH) independently cause hyponatremia. Both must be flagged simultaneously."],rule:"Hyponatremia drug causes: thiazide diuretics + SSRIs (SIADH) are the two most common and often occur together. Flag both.",cue:"Na 127 + confusion + on HCTZ and sertraline.",takeaway:"HCTZ + SSRIs = two independent causes of hyponatremia. When both are present, risk is compounded. Flag both for provider review."},
-{module:2,topic:"Fluid Resuscitation Evaluation",type:"Assessment",difficulty:"Level 3",source:"ATI + Brunner & Suddarth",question:"A client with hypovolemic shock secondary to GI bleeding has been receiving aggressive IV fluid resuscitation for 2 hours. The nurse is evaluating the client's response to treatment. Which finding best indicates that fluid resuscitation is effective?",options:["Urine output has increased from 10 mL/hr to 35 mL/hr and blood pressure has improved from 78/50 to 104/70 mmHg.","The client reports decreased thirst and the IV site has no signs of infiltration.","Serum sodium has increased from 130 to 135 mEq/L over the past 2 hours.","The client's weight has increased by 1.5 kg since admission, reflecting fluid repletion."],correct:0,hint:"Think about which parameters most directly reflect the restoration of circulatory volume and organ perfusion.",rationale:"The most reliable indicators that fluid resuscitation is effective are hemodynamic and end-organ perfusion markers: blood pressure returning toward normal (104/70 from 78/50) and urine output increasing to >=30 mL/hr (indicating renal perfusion is restored). These directly reflect improvement in circulating volume and tissue perfusion — the core goals of resuscitation from hypovolemic shock. Decreased thirst is subjective and less reliable. Sodium correction reflects electrolyte management, not resuscitation adequacy. Weight gain during resuscitation is a side effect of treatment, not a clinical goal marker.",whyWrong:["CORRECT — Urine output >=30 mL/hr + BP improving toward normal = best objective indicators of effective fluid resuscitation.","Decreased thirst is subjective and the IV site assessment is a safety/technique measure — neither reliably indicates hemodynamic response to resuscitation.","Sodium normalization reflects electrolyte correction, not resuscitation effectiveness — these are separate clinical goals.","Weight gain during resuscitation is a consequence of fluid administration, not a clinical effectiveness marker — it does not indicate hemodynamic stability."],rule:"Effective fluid resuscitation: urine output >=30 mL/hr + normalized blood pressure + improved mental status. These reflect restored organ perfusion.",cue:"Evaluating response to IV fluid resuscitation in hypovolemic shock.",takeaway:"Fluid resuscitation effectiveness = UO >=30 mL/hr + BP normalizing. These reflect restored perfusion. Weight gain and decreased thirst are not the measure."},
-{module:2,topic:"Potassium Replacement — Phlebitis",type:"Medication Safety",difficulty:"Level 3",source:"ATI + Lecture + Professor Review",question:"A nurse receives an order to administer potassium chloride 20 mEq in 100 mL NS IV over 1 hour via a peripheral IV site in the antecubital fossa. During the infusion, the client reports burning pain at the IV site and the nurse observes redness tracking up the arm. Which action should the nurse take?",options:["Slow the infusion rate to 30 mL/hr and reassure the client that burning is a normal sensation during potassium infusion.","Stop the infusion, discontinue the peripheral IV, assess the site for infiltration, and notify the provider about the need for a central line or a more dilute solution.","Apply warm compresses over the IV site to promote vasodilation and continue the infusion at the prescribed rate.","Increase the infusion rate to complete the dose quickly and minimize the duration of discomfort."],correct:1,hint:"Potassium is highly irritating to veins — what does pain plus redness tracking up the arm tell you about the current IV site?",rationale:"Potassium is highly vesicant (vein-damaging) and causes chemical phlebitis when infused via peripheral IV, particularly at higher concentrations. Burning pain at the site and redness tracking up the arm are signs of phlebitis/chemical irritation — the IV must be stopped and the site discontinued to prevent progressive vein damage, thrombophlebitis, or extravasation injury. The nurse must assess for infiltration and notify the provider. Potassium concentrations >40 mEq/L should ideally be infused via central venous access.",whyWrong:["Slowing the rate and reassuring the client ignores chemical phlebitis — continuing to infuse potassium into a damaged vein risks progressive injury and is unsafe.","CORRECT — Stop infusion + discontinue IV + assess site + notify provider. Phlebitis from potassium requires stopping the infusion.","Warm compresses may reduce discomfort but do not address the underlying phlebitis — the infusion must stop, not continue.","Increasing the infusion rate while the client has phlebitis would accelerate vein damage — this is absolutely contraindicated."],rule:"Potassium phlebitis: STOP infusion, discontinue IV site, assess for infiltration, notify provider. Potassium is vesicant — never push through a painful IV.",cue:"Burning pain + redness tracking up arm during potassium infusion.",takeaway:"Potassium phlebitis = STOP infusion immediately. K+ is vesicant. Notify provider for central line consideration. Never continue through a painful IV."},
-
-// ============================================================
-// MODULE 3 BATCH 2 — Q61–Q70 (Levels 3 & 4 only)
-// ============================================================
-{module:3,topic:"Status Epilepticus",type:"Priority",difficulty:"Level 4",source:"Professor Review + ATI + Brunner & Suddarth",question:"A nurse is caring for a client with a seizure disorder. The client has been experiencing a generalized tonic-clonic seizure for the past 6 minutes with no sign of stopping. Which action is the nurse's priority?",options:["Time the seizure, document all observations, and wait for it to conclude before intervening.","Activate the emergency response system, protect the client's airway, and prepare for IV benzodiazepine administration.","Restrain the client's extremities to prevent injury and insert an oral airway.","Administer a prescribed PRN anti-epileptic oral medication immediately to stop the seizure."],correct:1,hint:"A seizure that has lasted more than 5 minutes has a clinical name — and it is a neurological emergency requiring immediate pharmacological intervention.",rationale:"Status epilepticus is defined as a seizure lasting more than 5 minutes or two or more seizures without return to baseline consciousness. A 6-minute generalized tonic-clonic seizure meets this definition. This is a life-threatening neurological emergency because prolonged seizures cause hypoxia, neuronal injury, hyperthermia, and acidosis. The nurse must immediately activate the emergency response system, maintain a patent airway (positioning, suction), and prepare for IV benzodiazepine administration (lorazepam or diazepam is the first-line treatment). Oral medications cannot be given during an active seizure due to aspiration risk.",whyWrong:["Waiting and documenting only is appropriate for brief seizures — a 6-minute seizure has crossed into status epilepticus and requires immediate intervention.","CORRECT — Status epilepticus = activate emergency response + protect airway + prepare IV benzodiazepine.","Restraining a seizing patient causes fractures, dislocations, and injury — and inserting an oral airway during a seizure risks dental trauma.","Oral medications cannot be given to a seizing patient — aspiration risk is extreme, and absorption is too slow for an emergency."],rule:"Seizure >5 minutes = status epilepticus = neurological emergency. Activate emergency response + IV benzodiazepine. Never restrain. Never give oral meds during seizure.",cue:"Seizure lasting 6 minutes with no signs of stopping.",takeaway:"Seizure >5 min = status epilepticus = EMERGENCY. IV benzodiazepine is first-line. Never restrain. Never oral meds during active seizure."},
-{module:3,topic:"Right vs Left Hemisphere Stroke",type:"Clinical Judgment",difficulty:"Level 3",source:"Professor Review + Lecture + Brunner & Suddarth",question:"A nurse is caring for a client who had a right-hemisphere ischemic stroke 48 hours ago. The client is attempting to get out of bed alone on the affected left side and is not using the call light. The client insists there is nothing wrong and laughs when the nurse expresses concern. Which nursing diagnosis best guides the priority care for this client?",options:["Impaired verbal communication related to expressive aphasia","Unilateral neglect and impulsive behavior with high fall risk related to right-hemisphere stroke","Ineffective denial related to adjustment disorder following stroke","Impaired physical mobility related to right-sided weakness"],correct:1,hint:"Right hemisphere strokes cause a specific behavioral syndrome — the patient literally cannot perceive or attend to the affected side of the world.",rationale:"Right hemisphere strokes characteristically produce left-sided neglect syndrome (anosognosia) — the client is unaware of or indifferent to their left-sided deficits. This manifests as attempting to get out of bed without assistance, not acknowledging the left limbs, and displaying impulsive behavior without recognizing danger. This creates an extreme fall risk. The priority nursing concern is safety — continuous supervision, bed alarm, side rails, and thorough patient/family education about the neglect. Left hemisphere strokes cause expressive/receptive aphasia and right-sided weakness.",whyWrong:["Expressive aphasia is a left hemisphere stroke characteristic — right hemisphere strokes do not typically cause language deficits.","CORRECT — Right hemisphere stroke + left neglect + impulsivity = highest fall risk. Safety is the priority nursing concern.","Ineffective denial implies a psychological coping response — unilateral neglect is a neurological syndrome, not a psychological choice. This misframes the problem.","The weakness is left-sided (right hemisphere stroke), not right-sided — and the behavioral/safety risk from neglect is the priority concern over mobility."],rule:"Right hemisphere stroke = left-sided neglect + impulsivity + unilateral neglect = extreme fall risk. Left hemisphere = aphasia + right-sided weakness.",cue:"Right hemisphere stroke + getting out of bed alone + laughs at concern = left neglect syndrome.",takeaway:"Right hemisphere stroke = left neglect + impulsivity = fall risk. Left hemisphere = aphasia. Memory: Right = impulsive/reckless, Left = language lost."},
-{module:3,topic:"Post-tPA Monitoring",type:"Medication Safety",difficulty:"Level 4",source:"ATI + Brunner & Suddarth",question:"A client with acute ischemic stroke received IV tPA (alteplase) 90 minutes ago. The nurse's current assessment finds the client is increasingly confused, develops a sudden severe headache, and the left pupil is now 6 mm and non-reactive compared to 3 mm and reactive on admission. Blood pressure is 196/118 mmHg. Which action is most appropriate?",options:["Continue the tPA infusion and notify the provider about the neurological changes at the next scheduled check-in.","Stop the tPA infusion immediately, notify the provider, and prepare for emergency CT scan — suspected intracranial hemorrhage.","Administer IV labetalol as prescribed for the elevated blood pressure and reassess pupils in 15 minutes.","Reposition the client to HOB 30 degrees and suction the oropharynx to prevent aspiration during the confusion."],correct:1,hint:"One of the most feared complications of tPA is bleeding into the brain — the sudden changes in neurological status and the blown pupil tell you it may already be happening.",rationale:"The classic signs of intracranial hemorrhage (ICH) as a complication of tPA are: sudden severe headache, acute deterioration in neurological status, and new unequal pupils (blown pupil = herniation sign). An asymmetric, non-reactive dilated pupil indicates compression of cranial nerve III from mass effect — this is a neurosurgical emergency. The tPA infusion must be stopped IMMEDIATELY and the provider notified for emergency CT scan to confirm hemorrhage. Blood pressure management can follow but is secondary to stopping the causative agent.",whyWrong:["Continuing the tPA infusion when intracranial hemorrhage is suspected would worsen the bleeding — the infusion must be stopped immediately.","CORRECT — Stop tPA + notify provider + emergent CT = correct response to suspected post-tPA intracranial hemorrhage.","Treating blood pressure before stopping tPA and obtaining CT allows the bleed to continue — stopping tPA and imaging is the priority.","Repositioning and suctioning are supportive measures — they do not address the emergent hemorrhagic complication."],rule:"Post-tPA sudden neuro deterioration + blown pupil + severe headache = intracranial hemorrhage. STOP tPA immediately + emergent CT.",cue:"Post-tPA: sudden severe headache + unequal pupils + confusion = intracranial hemorrhage.",takeaway:"Post-tPA neuro decline = STOP infusion immediately. Blown pupil + sudden headache = bleeding in the brain. Emergent CT. Life-threatening."},
-{module:3,topic:"ICP Management",type:"Priority",difficulty:"Level 3",source:"ATI + Brunner & Suddarth + Lecture",question:"A nurse is caring for a client with severe traumatic brain injury on a ventilator in the ICU. The nurse is suctioning the client's endotracheal tube. Which observation during suctioning requires the nurse to stop and intervene immediately?",options:["The client's SpO2 drops transiently to 94% during the suction pass.","The ICP monitor displays a sustained rise from 15 mmHg to 38 mmHg during suctioning, with the client becoming bradycardic.","The client coughs during suctioning and the ventilator alarms briefly.","The suction catheter yields a small amount of thin, yellowish secretions."],correct:1,hint:"Suctioning is a known trigger for increased ICP — at what point does the ICP reading become dangerous, and what accompanies it?",rationale:"Normal ICP is 5–15 mmHg. An ICP of 38 mmHg represents dangerous intracranial hypertension. Suctioning stimulates the vagus nerve and can transiently raise ICP — but a sustained rise to 38 mmHg with bradycardia during suctioning suggests that the procedure is causing acute ICP crisis (and together with bradycardia may indicate early Cushing's response). The nurse must immediately stop suctioning, notify the provider, and ensure the HOB is at 30 degrees.",whyWrong:["Transient SpO2 dip to 94% during suctioning is expected and does not require immediate cessation — it should resolve quickly after the pass.","CORRECT — ICP 38 mmHg + bradycardia during suctioning = dangerous ICP crisis. Stop suctioning immediately.","Coughing and brief ventilator alarms during suctioning are expected responses — they do not require stopping the procedure.","Yellow secretions during suctioning indicate possible respiratory infection — important to report but not an immediate reason to stop the suction pass."],rule:"ICP >20 mmHg is concerning; >25–30 mmHg requires intervention. Stop any procedure causing sustained ICP elevation. Normal ICP: 5–15 mmHg.",cue:"ICP rising to 38 mmHg + bradycardia during suctioning.",takeaway:"Stop suctioning when ICP rises dangerously. ICP 38 + bradycardia = Cushing's warning. Stop, notify provider."},
-{module:3,topic:"Parkinson's Disease Fall Risk",type:"Safety",difficulty:"Level 3",source:"ATI + Lecture + Professor Review",question:"A nurse is completing a fall risk assessment for a client with advanced Parkinson's disease admitted for pneumonia. The client has a history of three falls at home. Current medications include carbidopa-levodopa TID, quetiapine for sleep, and amoxicillin. Which finding represents the highest fall risk specific to this client's neurological condition?",options:["The client is receiving amoxicillin, which can cause dizziness as a side effect.","The quetiapine may worsen extrapyramidal symptoms and is potentially inappropriate in Parkinson's disease.","The client's Parkinson's disease causes festinating gait, freezing episodes, and postural instability — all directly causing falls.","The client is hospitalized in an unfamiliar environment and may become confused at night."],correct:2,hint:"What is it about the neurological disease itself — not the medications or environment — that most directly causes falls in Parkinson's patients?",rationale:"In Parkinson's disease, the neurological deficits most directly responsible for falls are: festinating gait (involuntary acceleration with small shuffling steps), freezing episodes (sudden inability to initiate movement), and postural instability (loss of righting reflexes). These are intrinsic to the disease and are the primary, most immediate fall risk. The nurse should never rush a Parkinson's patient, must allow extra time for movement, and should implement fall precautions specifically tailored to these movement disorders.",whyWrong:["Amoxicillin occasionally causes GI side effects and rarely dizziness, but this is not a significant fall risk in the context of Parkinson's disease.","Quetiapine can worsen extrapyramidal symptoms in Parkinson's and should be reviewed by the provider — but the Parkinson's neurological deficits themselves are the more immediate and direct fall cause.","CORRECT — Festinating gait + freezing + postural instability are the Parkinson's-specific neurological mechanisms that directly cause falls.","Nighttime confusion in an unfamiliar environment is a general fall risk factor but is not specific to Parkinson's disease as the primary mechanism."],rule:"Parkinson's fall risk: festinating gait + freezing + postural instability are the primary neurological causes. Never rush the patient. Allow extra time for all movement.",cue:"Advanced Parkinson's + history of 3 falls at home.",takeaway:"Parkinson's falls are caused by festination + freezing + postural instability. Never rush. Extra time for all movement. These are disease-specific risks."},
-{module:3,topic:"Meningitis Precautions",type:"Infection Control",difficulty:"Level 3",source:"Brunner & Suddarth + ATI",question:"A client is admitted with suspected bacterial meningitis. The client has fever, severe headache, photophobia, and a non-blanching petechial rash on the trunk. Which isolation precaution should the nurse implement before the patient reaches the assigned room?",options:["Contact precautions — bacterial meningitis is transmitted by direct contact with secretions.","Airborne precautions — N95 respirator, negative-pressure room, and eye protection required.","Droplet precautions — surgical mask for all within 3 feet and private room, until meningococcal meningitis is ruled out.","Standard precautions only — bacterial meningitis is not transmitted person-to-person once the client is on antibiotics."],correct:2,hint:"The non-blanching petechial rash in combination with meningitis symptoms points to a specific, highly contagious organism — and its transmission route determines isolation type.",rationale:"A petechial rash with meningitis is the classic presentation of Neisseria meningitidis (meningococcal meningitis), which is transmitted via respiratory droplets. Until meningococcal meningitis is ruled out, droplet precautions must be implemented immediately — private room, surgical mask for healthcare workers within 3 feet, and mask for the patient during transport. Precautions should be initiated BEFORE confirmation because the organism is highly transmissible and the infection carries a high mortality rate.",whyWrong:["Contact precautions alone are insufficient — meningococcal disease requires droplet precautions due to respiratory droplet transmission.","Airborne precautions (N95, negative-pressure room) are used for tuberculosis, measles, and varicella — not meningococcal meningitis.","CORRECT — Droplet precautions immediately for suspected meningococcal meningitis. Petechial rash = Neisseria meningitidis until proven otherwise.","Standard precautions only is dangerously insufficient — meningococcal disease is highly contagious via droplets even before antibiotic therapy fully reduces transmission."],rule:"Petechial rash + meningitis = meningococcal meningitis suspected = DROPLET precautions immediately. Private room, surgical mask within 3 feet.",cue:"Petechial rash + meningitis symptoms = Neisseria meningitidis.",takeaway:"Petechial rash + meningitis = droplet precautions STAT. N. meningitidis = respiratory droplets. Not airborne. Not contact alone."},
-{module:3,topic:"Expressive Aphasia Communication",type:"Clinical Judgment",difficulty:"Level 3",source:"ATI + Brunner & Suddarth",question:"A nurse is caring for a client with a left-hemisphere stroke who understands what is said but cannot produce words or speech. The client becomes increasingly frustrated and tearful when unable to communicate needs. Which nursing intervention is most appropriate?",options:["Speak very loudly and slowly to the client to help them understand and respond.","Ask the family to translate for the client since they know the patient's needs best.","Provide a communication board with pictures and letters, allow extra time, ask yes/no questions, and validate the client's frustration.","Refer all communication needs to the speech-language pathologist and avoid engaging the client until formal therapy begins."],correct:2,hint:"The client understands everything — the problem is getting words out, not understanding them. Which communication approach works with that preserved ability?",rationale:"This client has expressive aphasia (Broca's aphasia) — they understand language (receptive function intact) but cannot produce speech. The correct approach capitalizes on preserved comprehension: use yes/no questions (which require only a nod or head shake), provide a communication board with pictures/letters for pointing, allow extra time without rushing, maintain a calm environment, and validate the frustration. Speaking louder is inappropriate — the client hears and understands normally.",whyWrong:["Speaking loudly is for hearing impairment — expressive aphasia does not affect hearing or comprehension. This is inappropriate and condescending.","Relying entirely on family ignores the client's autonomy and does not build the nurse-client therapeutic relationship.","CORRECT — Communication board + yes/no questions + extra time + validation = correct approach for expressive aphasia.","Waiting until SLP therapy to engage the client leaves immediate communication needs unaddressed — nurses must implement communication strategies independently."],rule:"Expressive aphasia: comprehension intact, speech absent. Use yes/no questions, communication board, pictures, extra time. Never speak louder — they hear fine.",cue:"Left hemisphere stroke — understands but cannot produce words = expressive (Broca's) aphasia.",takeaway:"Expressive aphasia = understands everything, cannot speak. Communication board + yes/no + patience. Never yell. Never exclude from conversation."},
-{module:3,topic:"Multiple Sclerosis Relapse — Optic Neuritis",type:"Clinical Judgment",difficulty:"Level 3",source:"ATI + Brunner & Suddarth",question:"A client with relapsing-remitting MS calls the nursing clinic to report sudden worsening of vision in the right eye over the past 2 days, describing blurring and eye pain with eye movement. The nurse recognizes this as a possible MS relapse. Which instruction is most appropriate?",options:["Tell the client to rest, avoid heat exposure, and call back if the vision does not improve within one week.","Advise the client to come in immediately or go to the emergency department for evaluation — optic neuritis is a common MS relapse symptom requiring urgent assessment and corticosteroid treatment.","Instruct the client to increase their current disease-modifying therapy dose for the next 3 days.","Reassure the client that vision changes during remission are expected and do not require evaluation."],correct:1,hint:"Sudden vision loss with eye pain on movement has a name in MS — and it requires urgent evaluation, not watchful waiting.",rationale:"Sudden vision loss with eye pain on movement is the classic presentation of optic neuritis — one of the most common manifestations of MS relapse. Optic neuritis can cause permanent vision loss if untreated. It requires urgent evaluation (often including MRI and ophthalmology consult) and typically requires high-dose IV corticosteroids to shorten the relapse and reduce the risk of permanent damage. Advising the patient to wait a week risks permanent vision loss.",whyWrong:["Advising the patient to wait and call back risks permanent vision loss from untreated optic neuritis — this is unsafe.","CORRECT — Optic neuritis in MS is an urgent relapse requiring immediate evaluation and likely IV corticosteroids.","Instructing the patient to independently adjust their DMT dose is beyond nursing scope and could cause serious harm.","Sudden vision changes in MS during a possible relapse are never expected or benign — this dismissal is unsafe."],rule:"MS + sudden vision loss with eye pain on movement = optic neuritis = urgent evaluation + IV corticosteroids. Do not wait. Do not dismiss.",cue:"Sudden unilateral vision blurring + eye pain on movement in MS patient.",takeaway:"MS + sudden vision loss with eye pain = optic neuritis = URGENT. Come in immediately. IV steroids may save the vision."},
-{module:3,topic:"Neurological Assessment — Blown Pupil",type:"Assessment",difficulty:"Level 3",source:"ATI + Brunner & Suddarth",question:"A nurse is performing hourly neurological checks on a client with a subdural hematoma. At the previous check, pupils were equal and reactive at 3 mm bilaterally. On the current check, the right pupil is 7 mm and non-reactive; the left pupil remains 3 mm and reactive. The client's Glasgow Coma Scale has declined from 12 to 8. Which action should the nurse take first?",options:["Document the findings, continue monitoring, and report at the end of the shift during handoff.","Notify the provider and the rapid response team immediately — these findings indicate herniation.","Obtain a STAT head CT scan independently and prepare the client for transport.","Administer a prescribed PRN analgesic for the client's headache and reassess in 30 minutes."],correct:1,hint:"A unilaterally dilated, fixed pupil has a specific anatomical explanation — it is not a medication effect or lighting artifact.",rationale:"A unilaterally fixed, dilated pupil (blown pupil) in the context of a declining GCS represents compression of cranial nerve III (oculomotor nerve) by the temporal lobe herniating through the tentorium cerebelli — transtentorial herniation. This is the most immediately life-threatening neurological emergency. The nurse must call the provider and rapid response team immediately, as the client may need emergent surgical intervention (craniotomy or burr holes for hematoma evacuation). Waiting until end-of-shift or administering analgesics while herniation is occurring would be fatal errors.",whyWrong:["Documenting and reporting at handoff is completely inadequate — transtentorial herniation with a blown pupil can progress to death in minutes.","CORRECT — Unilateral blown pupil + declining GCS in subdural hematoma = herniation = immediate provider + rapid response notification.","Ordering a CT scan independently is outside nursing scope — the nurse notifies the provider who will order the scan; the notification comes first.","Administering analgesics while the client is herniating does not address the emergency and could mask further neurological decline."],rule:"Unilateral blown pupil (fixed, dilated) + GCS decline = transtentorial herniation = call provider + rapid response IMMEDIATELY. Minutes matter.",cue:"Right pupil 7 mm fixed + GCS decline from 12 to 8 in subdural hematoma.",takeaway:"Blown pupil (unilateral fixed dilated) = brain herniation. CALL CODE/RAPID RESPONSE immediately. This is minutes from death."},
-
-,
-{module:3,topic:"Parkinson's — Aspiration Risk",type:"Priority",difficulty:"Level 3",source:"ATI + Lecture + Professor Review",question:"A nurse is caring for a client with Parkinson's disease who is eating lunch. The client begins coughing repeatedly with each bite, has a wet gurgling voice quality after swallowing, and food particles are visible around the lips. Which nursing action is the highest priority?",options:["Encourage the client to eat slowly and take smaller bites to reduce coughing.","Stop oral intake immediately, position the client upright, and notify the provider for a formal swallowing evaluation.","Offer the client thickened liquids instead of regular liquids to reduce aspiration risk.","Document the coughing as an expected finding in Parkinson's disease and continue monitoring."],correct:1,hint:"Coughing with every bite plus a wet, gurgling voice after swallowing are specific red flags for one dangerous complication — what must stop immediately?",rationale:"Coughing with swallowing, a wet gurgling voice quality after eating (indicating food or fluid in the airway), and food particles visible at the mouth are signs of active aspiration or severe dysphagia — a life-threatening emergency in a Parkinson's patient. Aspiration pneumonia is the leading cause of death in Parkinson's disease. The nurse must immediately stop all oral intake, ensure the client is fully upright, and notify the provider for emergency swallowing evaluation by speech-language pathology. Continuing to offer food or liquids in any form without evaluation risks aspiration pneumonia and respiratory failure.",whyWrong:["Encouraging slow eating and smaller bites continues to expose the client to aspiration risk when active aspiration signs are already present — oral intake must stop.","CORRECT — Stop oral intake immediately + upright positioning + notify provider for swallowing evaluation. Active aspiration signs = emergency.","Switching to thickened liquids without a formal evaluation assumes a level of modification that may not be safe — and active aspiration signs require stopping all intake first.","Coughing with every bite and a wet voice are NOT expected findings — they are signs of active aspiration requiring immediate intervention."],rule:"Active aspiration signs (coughing with swallowing + wet voice) = STOP oral intake immediately + notify provider. Never continue feeding during active aspiration.",cue:"Coughing every bite + wet gurgling voice + Parkinson's disease.",takeaway:"Wet gurgling voice after swallowing = food in airway = aspiration. STOP oral intake NOW. Notify provider. Aspiration = leading cause of death in Parkinson's."},
-
-// ============================================================
-// MODULE 4 BATCH 2 — Q71–Q80 (Levels 3 & 4 only)
-// ============================================================
-{module:4,topic:"ACE Inhibitor Adverse Effect",type:"Medication Safety",difficulty:"Level 3",source:"ATI + Brunner & Suddarth",question:"A client with hypertension has been taking lisinopril 10 mg daily for 3 weeks. The client calls the clinic reporting a persistent dry, hacking cough that started 10 days ago and is not improving. The client denies fever, shortness of breath, or sputum production. Which response by the nurse is most appropriate?",options:["Advise the client to take an OTC cough suppressant and continue the lisinopril as prescribed.","Instruct the client to stop the lisinopril immediately and not take any more doses.","Tell the client this is a common side effect of ACE inhibitors, advise them not to stop the medication independently, and schedule a provider appointment to discuss switching to an ARB.","Reassure the client that the cough will resolve on its own within a few days and to continue the medication."],correct:2,hint:"A dry, non-productive cough appearing weeks after starting a specific antihypertensive class has a known cause — and there is a well-established medication alternative.",rationale:"A persistent dry, non-productive cough is the most common side effect of ACE inhibitors (including lisinopril), occurring in 5–20% of patients. It is caused by accumulation of bradykinin and substance P due to ACE inhibition. The cough does not indicate infection or cardiac decompensation. The correct nursing response is to: acknowledge the side effect, instruct the client not to stop the medication without provider guidance (abrupt discontinuation causes rebound hypertension), and schedule a provider appointment to discuss switching to an ARB, which does not cause this side effect.",whyWrong:["A cough suppressant treats the symptom but not the cause, and continuing lisinopril without a provider plan is incomplete guidance.","Telling the client to stop lisinopril immediately without provider guidance is unsafe — abrupt discontinuation of antihypertensives can cause rebound hypertension.","CORRECT — This is ACE inhibitor cough. Do not stop medication independently. Schedule provider visit to discuss switching to ARB.","The cough from ACE inhibitors does not resolve on its own while continuing the medication — it persists as long as the drug is taken."],rule:"ACE inhibitor + persistent dry cough = medication side effect from bradykinin accumulation. Switch to ARB. Never stop antihypertensive without provider guidance.",cue:"Dry cough starting 10 days after beginning lisinopril.",takeaway:"ACE inhibitor + dry cough = bradykinin effect. Switch to ARB. Never stop BP meds without provider. Cough will not resolve on same drug."},
-{module:4,topic:"Acute Pulmonary Edema — Delegation",type:"Priority",difficulty:"Level 4",source:"ATI + Professor Review + Lecture",question:"A nurse receives a call from a UAP about a client with chronic heart failure: 'The patient is sitting bolt upright, gasping for air, has pink frothy sputum on the pillow, and is asking me to call for help.' The nurse is currently administering medications to another client down the hall. Which action should the nurse take first?",options:["Finish administering the current client's medications and then go assess the heart failure client.","Ask the UAP to apply supplemental oxygen and raise the head of the bed while the nurse immediately proceeds to the room.","Call the provider first and wait for orders before going to the bedside.","Ask the charge nurse to assess the client while the nurse completes the medication administration."],correct:1,hint:"The UAP is describing a respiratory emergency in progress — what is the nurse obligated to do right now, and what can safely be delegated to the UAP?",rationale:"Pink frothy sputum and gasping respirations in a heart failure patient is acute pulmonary edema — an immediately life-threatening emergency. The nurse must go to the bedside immediately. While moving, the nurse instructs the UAP (who is already present) to apply supplemental oxygen and raise the HOB — both of which are within UAP scope and provide immediate benefit while the nurse is en route. Completing medication administration for a stable client takes priority over nothing when another patient is in respiratory arrest risk.",whyWrong:["Finishing medications before attending to a patient in respiratory distress is a patient safety violation — the new emergency supersedes the stable task.","CORRECT — Direct UAP to apply O2 and raise HOB while nurse goes to bedside immediately. Delegate safe UAP actions while responding.","Calling the provider before going to the bedside delays essential nursing assessment and intervention — assess first, then call.","Delegating the assessment to the charge nurse is acceptable only if the nurse truly cannot respond — but the nurse must prioritize this emergency over medication administration."],rule:"Respiratory emergency = leave stable task + immediately respond. Delegate safe UAP actions (O2, HOB) while in transit. Never delay for stable task completion.",cue:"Pink frothy sputum + gasping = acute pulmonary edema = leave current task.",takeaway:"Respiratory emergency overrides everything. Delegate O2 and HOB to UAP, go immediately. Stable medication administration can wait. Life cannot."},
-{module:4,topic:"PAD Wound Care",type:"Clinical Judgment",difficulty:"Level 3",source:"ATI + Brunner & Suddarth",question:"A nurse is caring for a client with peripheral arterial disease who has a dry, necrotic eschar on the right great toe. The wound has well-defined, dry, dark edges. Pedal pulses are absent and the toe is cold. The provider has not yet evaluated the wound. Which nursing action is most appropriate?",options:["Apply warm, moist soaks to the toe twice daily to soften the eschar and promote healing.","Debride the eschar with gauze to remove the necrotic tissue and apply a wet-to-dry dressing.","Keep the eschar dry and intact, do not debride, and notify the provider for wound management evaluation.","Apply povidone-iodine to the wound and cover with a moisture-retentive dressing."],correct:2,hint:"In arterial insufficiency, dry eschar protects the wound — removing it or adding moisture without restoring circulation creates a much worse problem.",rationale:"In peripheral arterial disease, dry necrotic eschar on a toe represents ischemic necrosis from inadequate perfusion. Unlike venous wounds, arterial wounds with absent pulses should NOT be debrided or moistened until vascular status is evaluated and blood flow is restored or assessed by the provider/vascular surgeon. Moist dressings on an ischemic wound can promote bacterial growth without the healing blood flow needed to combat infection. The correct approach is to keep the eschar dry and intact (it acts as a protective barrier), avoid debridement, and notify the provider for vascular surgery consultation.",whyWrong:["Warm moist soaks on an ischemic toe increase metabolic demand and provide moisture without the circulation needed to support healing — this worsens the wound.","Debridement without adequate circulation removes the protective eschar and opens an ischemic wound to infection without the blood flow to heal it.","CORRECT — Keep eschar dry and intact, notify provider. Do not debride or moisten arterial ischemic wounds without vascular evaluation.","Povidone-iodine is cytotoxic to granulation tissue and is not appropriate — and moistening an ischemic eschar is contraindicated."],rule:"PAD + dry eschar + absent pulses = keep dry, do NOT debride, notify provider/vascular surgery. Moist dressings and debridement are contraindicated without restoring perfusion.",cue:"Dry necrotic eschar + absent pulses + cold toe in PAD patient.",takeaway:"PAD dry eschar = keep DRY, do NOT debride. No moisture, no warm soaks. Notify provider for vascular evaluation first."},
-{module:4,topic:"Anticoagulation Monitoring — aPTT",type:"Lab Interpretation",difficulty:"Level 3",source:"ATI + Brunner & Suddarth",question:"A client with atrial fibrillation is receiving a continuous heparin infusion. The most recent aPTT result is 142 seconds. The therapeutic range per protocol is 60–100 seconds. The client's vital signs are stable. Which action should the nurse take?",options:["Continue the heparin infusion at the current rate and recheck the aPTT in 6 hours.","Hold the heparin infusion, notify the provider, and assess the client for signs of bleeding.","Increase the heparin rate to achieve a higher therapeutic level.","Administer protamine sulfate 50 mg IV immediately to reverse the heparin."],correct:1,hint:"The aPTT is above the upper limit of the therapeutic range — what does that mean for bleeding risk, and what should happen to the infusion?",rationale:"An aPTT of 142 seconds is supratherapeutic — it exceeds the upper therapeutic limit of 100 seconds and indicates over-anticoagulation with significant bleeding risk. The nurse must hold the heparin infusion, notify the provider, and immediately assess the client for signs of bleeding (IV sites, gums, urine, stool, neurological status, skin). The provider will determine whether to resume at a reduced rate or hold entirely based on clinical assessment. Protamine sulfate is the reversal agent for heparin but is used for emergency reversal of major bleeding, not a supratherapeutic aPTT alone.",whyWrong:["Continuing the infusion at the current rate when the aPTT is already 42 seconds above the upper limit risks serious or life-threatening hemorrhage.","CORRECT — Hold heparin + notify provider + assess for bleeding. aPTT 142 = supratherapeutic = bleeding risk.","Increasing the heparin rate would further elevate the aPTT and dramatically increase hemorrhage risk — this is contraindicated.","Protamine sulfate is used for life-threatening bleeding reversal, not a supratherapeutic aPTT in a clinically stable patient — hold the infusion and notify first."],rule:"aPTT above therapeutic range = hold heparin + notify provider + assess for bleeding. Protamine sulfate = emergency reversal for major bleeding only.",cue:"aPTT 142 seconds, therapeutic range 60–100, on continuous heparin.",takeaway:"aPTT above range = HOLD heparin, notify provider, assess for bleeding. Do not continue. Protamine = emergency reversal only."},
-{module:4,topic:"Heart Failure — Salt Substitute Teaching",type:"Teaching",difficulty:"Level 3",source:"ATI + Lecture + Professor Review",question:"A nurse is providing dietary teaching to a client being discharged with a new heart failure diagnosis. The client is prescribed furosemide 40 mg daily. Which statement by the client indicates the most critical need for further teaching?",options:["I will use a salt substitute instead of regular salt to reduce my sodium intake.","I will eat bananas, oranges, and potatoes every day since my diuretic can lower my potassium.","I will weigh myself every morning before breakfast and call my doctor if I gain more than 2 pounds overnight.","I will limit how much I drink each day and avoid salty, canned, and processed foods."],correct:0,hint:"Salt substitutes seem like a healthy swap — but one of the medications this patient takes makes this choice potentially dangerous.",rationale:"Salt substitutes (such as NoSalt or Nu-Salt) contain potassium chloride instead of sodium chloride. While this seems like a safe sodium reduction strategy, it is dangerous for clients taking ACE inhibitors, ARBs, or potassium-sparing diuretics — all of which can raise potassium levels. In heart failure patients who may be prescribed multiple cardiovascular medications over time, potassium-containing salt substitutes combined with potassium-elevating drugs can cause dangerous hyperkalemia. The client must be taught to avoid salt substitutes without provider guidance.",whyWrong:["CORRECT — Salt substitutes contain potassium chloride. In heart failure patients on cardiac medications, potassium-containing salt substitutes can cause dangerous hyperkalemia.","Eating potassium-rich foods to replace potassium lost from furosemide is correct dietary guidance — this does not require further teaching.","Daily weights with the 2-pound trigger is the correct heart failure self-monitoring instruction — this is appropriate.","Fluid restriction and avoiding salty processed foods are correct heart failure dietary restrictions — this statement is appropriate."],rule:"Salt substitutes = potassium chloride. Can cause hyperkalemia when combined with ACE inhibitors, ARBs, or potassium-sparing diuretics. Must be avoided without provider guidance.",cue:"Heart failure patient planning to use salt substitutes while on furosemide.",takeaway:"Salt substitutes = potassium chloride. In HF patients on cardiac meds, this can cause hyperkalemia. Teach: avoid salt substitutes without asking your provider."},
-{module:4,topic:"Nitroglycerin Protocol",type:"Medication Safety",difficulty:"Level 3",source:"ATI + Brunner & Suddarth",question:"A client with stable angina takes sublingual nitroglycerin (NTG) as needed. The client calls the nurse asking how to correctly use their NTG and what to do if it does not work. Which instruction is most important to include?",options:["Take up to five nitroglycerin tablets 5 minutes apart, then drive yourself to the emergency room if the pain continues.","Sit or lie down before taking NTG, take one tablet at onset of pain, and if pain persists after three tablets 5 minutes apart, call 911 immediately.","Take nitroglycerin only when the pain is 8/10 or higher; milder pain does not require medication.","Store your nitroglycerin in a warm, bright location and carry it in your shirt pocket for easy access."],correct:1,hint:"There is a specific protocol for nitroglycerin — how many doses, how far apart, and exactly what to do if it does not work after the third one.",rationale:"The correct nitroglycerin protocol for stable angina is: sit or lie down first (NTG causes vasodilation and orthostatic hypotension), take one sublingual tablet at onset of chest pain, and if pain is not relieved after 5 minutes, take a second tablet. If pain persists, take a third tablet after another 5 minutes. If pain is not relieved after three tablets over 15 minutes, call 911 immediately — this indicates the pain is likely myocardial infarction, not stable angina. NTG should be stored in a dark, cool location and not in a shirt pocket (body heat degrades it).",whyWrong:["Five tablets is incorrect (maximum is 3), and driving to the ER is unsafe and delays emergency care — call 911.","CORRECT — Sit/lie first, one tablet, repeat every 5 minutes up to 3 times, call 911 if no relief after 3 tablets.","Nitroglycerin should be taken at the onset of chest pain — waiting for 8/10 pain delays treatment and increases myocardial damage.","NTG should be stored in a dark, cool location and away from heat and light — a shirt pocket against the body degrades the medication."],rule:"NTG protocol: 1 tablet at onset, repeat every 5 min x3 max. If no relief after 3 tablets — call 911. Sit first. Store cool and dark.",cue:"Sublingual nitroglycerin use and protocol for stable angina.",takeaway:"NTG: sit down + 1 tablet + wait 5 min + repeat x3 max. No relief after 3 = call 911 = possible MI. Never drive. Store cool and dark."},
-{module:4,topic:"Venous vs Arterial Ulcer",type:"Assessment",difficulty:"Level 3",source:"ATI + Brunner & Suddarth",question:"A nurse is assessing two clients with lower extremity ulcers. Client A has a shallow, irregular ulcer with fibrinous yellow slough around the medial malleolus with pitting edema and brown skin discoloration of the lower leg. Client B has a deep, punched-out ulcer on the tip of the right second toe with pale, hairless skin and a cold, pulseless foot. Which statement correctly distinguishes these clients?",options:["Both clients have arterial insufficiency ulcers and should receive similar wound care.","Client A has a venous stasis ulcer and Client B has an arterial ischemic ulcer — they require different management approaches.","Client B likely has a diabetic neuropathic ulcer because it is located on the toe.","Client A has an arterial ulcer because it is near the ankle where circulation is lowest."],correct:1,hint:"Location, appearance, and surrounding skin findings tell you which vascular system is failing — venous vs arterial wounds look and behave very differently.",rationale:"Client A has classic venous insufficiency ulcer: medial malleolus location, shallow irregular wound, fibrinous slough, pitting edema, hemosiderin (brown) staining — venous hypertension causes these wounds. Management includes compression therapy, wound moisture, and edema control. Client B has classic arterial ischemic ulcer: distal location (toe tip), deep punched-out appearance, pale hairless skin, cold pulseless foot — arterial insufficiency causes these wounds. Management requires vascular surgery evaluation; never apply compression (would cut off arterial flow).",whyWrong:["Both ulcers are not arterial — they represent opposite etiologies and require different interventions. Treating Client A with compression would help; treating Client B with compression would be harmful.","CORRECT — Client A = venous (medial malleolus, edema, staining). Client B = arterial (distal, pulseless, pale, cold). Different management.","Diabetic neuropathic ulcers occur on pressure points and the client shows classic arterial insufficiency signs (absent pulses, cold, pale) — arterial ischemia is the correct diagnosis.","The medial malleolus is the classic location of VENOUS stasis ulcers, not arterial — arterial ulcers occur at distal points (toes, lateral malleolus, areas of pressure)."],rule:"Venous ulcer: medial malleolus, shallow, irregular, edema, brown staining → compression therapy. Arterial ulcer: distal, punched-out, pale, cold, pulseless → NO compression, vascular surgery.",cue:"Medial malleolus + edema + brown staining vs. toe tip + pale + pulseless.",takeaway:"Venous ulcer: medial ankle, edema, brown, use compression. Arterial ulcer: distal, pale, cold, pulseless — NEVER compress. Opposite management."},
-{module:4,topic:"Post-MI Priority Client",type:"Clinical Judgment",difficulty:"Level 4",source:"ATI + Professor Review",question:"A medical-surgical nurse receives report and must prioritize four clients. Which client requires the most immediate assessment?",options:["A client with stable angina who reports their usual exertional chest discomfort resolved with one nitroglycerin tablet 20 minutes ago.","A client admitted for hypertension management whose BP is 158/94 mmHg on their second set of vital signs this shift.","A client post-MI (day 2) who reports new onset left shoulder pain, diaphoresis, and states 'I feel like something is wrong.'","A client with heart failure awaiting discharge who has 1+ bilateral ankle edema and SpO2 96% on room air."],correct:2,hint:"One client's statement contains a very specific combination of words that together signal a potentially catastrophic cardiac event.",rationale:"A day-2 post-MI client reporting new left shoulder pain and diaphoresis with a sense of impending doom represents possible extension of their MI or a new acute coronary event — a cardiac emergency. New or changing symptoms after MI must be treated as ACS until proven otherwise. The shoulder pain (referred cardiac pain), diaphoresis (sympathetic activation from ischemia), and subjective sense that something is wrong (which patients often describe before cardiac arrest) demand immediate assessment, ECG, cardiac biomarkers, and provider notification.",whyWrong:["Stable angina that resolved with one NTG is expected and managed — this client is now pain-free and stable.","BP 158/94 in a patient admitted for hypertension management is expected and requires ongoing monitoring — not an immediate emergency.","CORRECT — Post-MI + new shoulder pain + diaphoresis + sense of doom = possible MI extension or new ACS = assess immediately.","Mild ankle edema with SpO2 96% in a heart failure discharge patient is a monitored finding but does not represent an acute emergency."],rule:"Post-MI: any new chest/referred pain + diaphoresis + sense of doom = possible MI extension. Treat as cardiac emergency. Assess FIRST.",cue:"Post-MI day 2 + new shoulder pain + diaphoresis + 'something is wrong.'",takeaway:"Post-MI new shoulder pain + diaphoresis + sense of doom = possible re-infarction. ASSESS IMMEDIATELY. Referred cardiac pain + autonomic symptoms = cardiac emergency."},
-{module:4,topic:"Beta-Blocker Contraindication — Asthma",type:"Medication Safety",difficulty:"Level 3",source:"ATI + Brunner & Suddarth",question:"A nurse is reviewing the medication administration record for a client newly admitted with hypertension and an acute asthma exacerbation. The admitting provider has prescribed metoprolol tartrate 25 mg PO for blood pressure control. Which action should the nurse take?",options:["Administer the metoprolol as prescribed and monitor for bronchospasm.","Hold the metoprolol, contact the provider, and communicate the contraindication of beta-blockers in active asthma.","Administer the metoprolol because metoprolol is cardioselective and safe in all patients with asthma.","Request a prescription for a non-selective beta-blocker which is safer in patients with reactive airway disease."],correct:1,hint:"Beta-blockers and the airways have a specific interaction — even the selective ones carry risk in active bronchospasm.",rationale:"Beta-blockers — including cardioselective agents like metoprolol — are relatively or absolutely contraindicated in patients with active asthma or reactive airway disease because they block beta-2 adrenergic receptors in the bronchi, causing bronchoconstriction and potentially life-threatening respiratory compromise. In a patient with an acute asthma exacerbation, this risk is particularly high. The nurse must hold the medication and contact the prescriber to clarify the order and discuss safer alternatives (such as calcium channel blockers or ACE inhibitors).",whyWrong:["Administering the metoprolol and monitoring for bronchospasm is unsafe — it introduces a known risk in a patient with active asthma, and bronchospasm may be severe.","CORRECT — Hold metoprolol + contact provider to communicate beta-blocker contraindication in active asthma.","Cardioselective beta-blockers are safer than non-selective, but they are NOT universally safe in asthma — they retain beta-2 blockade effects especially at higher doses or in acute exacerbation.","Non-selective beta-blockers have greater bronchospasm risk than selective ones — requesting a non-selective agent is the opposite of correct."],rule:"Beta-blockers (including cardioselective) are contraindicated in active asthma. Hold + notify provider. Choose CCBs, ACE inhibitors, or ARBs instead.",cue:"Metoprolol prescribed for hypertension in patient with active asthma exacerbation.",takeaway:"Beta-blockers + active asthma = contraindicated. Even cardioselective ones risk bronchospasm. Hold + notify provider. Not safe in active exacerbation."},
-{module:4,topic:"Decompensated HF — Home Visit",type:"Clinical Judgment",difficulty:"Level 4",source:"Professor Review + ATI + Lecture",question:"A home health nurse visits a client with known heart failure. Since the last visit 3 days ago, the nurse notes: weight increased from 162 lbs to 169 lbs (3.2 kg), bilateral crackles in all lung fields, the client reports sleeping with 4 pillows (previously 2), and the client is mildly confused. SpO2 is 89% on room air. Which sequence of actions is correct?",options:["Educate the client about dietary sodium restriction, schedule a follow-up appointment for next week, and leave.","Elevate the head of the bed, apply supplemental oxygen, call 911 for emergency transport, and notify the provider.","Document the findings, call the provider's office to leave a message, and wait for a callback before taking further action.","Weigh the client again on a different scale to verify the weight gain before taking any action."],correct:1,hint:"Multiple data points are all moving in the wrong direction simultaneously — SpO2 89% with confusion is not a problem that can wait for a callback.",rationale:"This client has acute decompensated heart failure with multiple worsening indicators: 7-lb weight gain in 3 days (>2 lbs/day), bilateral crackles throughout all lung fields, increased orthopnea (4 vs 2 pillows), new confusion (altered mental status from hypoxia), and SpO2 89%. SpO2 89% with confusion constitutes a medical emergency requiring hospitalization. The nurse must: apply oxygen immediately (ABCs), elevate HOB, and call 911 for emergency transport — this client cannot be managed safely at home.",whyWrong:["Teaching about sodium restriction is appropriate for chronic management, but this client is in acute decompensation with SpO2 89% and confusion — education is not the priority.","CORRECT — HOB elevation + O2 + call 911 + notify provider = correct emergency response to acute decompensated HF with SpO2 89% and confusion.","Leaving a message and waiting for a callback while the client is hypoxic and confused is an unacceptable delay — this is a 911 situation.","Re-weighing to verify findings wastes critical time when the patient already has SpO2 89%, confusion, and bilateral crackles — the clinical picture is already an emergency."],rule:"Acute decompensated HF: SpO2 <90% + confusion = 911. Elevate HOB + O2 immediately. Weight gain >2 lbs/day + orthopnea + crackles = hospitalization needed.",cue:"SpO2 89% + confusion + 7-lb weight gain + crackles + 4-pillow orthopnea = acute decompensated HF.",takeaway:"SpO2 89% + confusion in decompensated HF = call 911. O2 + HOB immediately. This is an emergency, not an outpatient management situation."}
-
+}
 ];
 
 // ============================================================
@@ -1492,282 +1375,87 @@ let answered = 0;
 let correct = 0;
 let results = [];
 let hintVisible = false;
-const qCounts = {1:10, 2:10, 3:10, 4:10};
 
-// ── localStorage keys ──────────────────────────────────────────────────────
-const SESSION_KEY = 'nrsg_session';
-const MASTERY_KEY = 'nrsg_mastery';
-
-// ── Mastery helpers ────────────────────────────────────────────────────────
-function loadMastery(){
-  try {
-    const raw = localStorage.getItem(MASTERY_KEY);
-    if(raw){
-      const d = JSON.parse(raw);
-      return {
-        mastered:  d.mastered  || [],
-        incorrect: d.incorrect || [],
-        prestige:  d.prestige  || {1:0, 2:0, 3:0, 4:0}
-      };
-    }
-  } catch(e){}
-  return { mastered: [], incorrect: [], prestige: {1:0, 2:0, 3:0, 4:0} };
-}
-
-function saveMastery(m){ try{ localStorage.setItem(MASTERY_KEY, JSON.stringify(m)); }catch(e){} }
-
-// Called after every answer to update mastery in real-time
-function recordAnswer(qId, isCorrect){
-  const m = loadMastery();
-  if(isCorrect){
-    if(m.mastered.indexOf(qId) === -1) m.mastered.push(qId);
-    const ii = m.incorrect.indexOf(qId);
-    if(ii > -1) m.incorrect.splice(ii, 1);
-  } else {
-    // Only add to incorrect if NOT already mastered
-    if(m.mastered.indexOf(qId) === -1 && m.incorrect.indexOf(qId) === -1){
-      m.incorrect.push(qId);
-    }
-  }
-  saveMastery(m);
-}
-
-// Called at end of quiz: check each module; if all questions mastered → reset that module
-function checkModuleResets(){
-  const m = loadMastery();
-  if(!m.prestige) m.prestige = {1:0, 2:0, 3:0, 4:0};
-  let changed = false;
-  [1,2,3,4].forEach(function(mod){
-    const modIds = ALL_QUESTIONS
-      .map(function(q,i){ return q.module===mod ? i : -1; })
-      .filter(function(i){ return i>-1; });
-    const allMastered = modIds.every(function(id){ return m.mastered.indexOf(id)>-1; });
-    if(allMastered){
-      // Increment prestige before wiping mastered list
-      m.prestige[mod] = (m.prestige[mod] || 0) + 1;
-      modIds.forEach(function(id){
-        const mi = m.mastered.indexOf(id); if(mi>-1) m.mastered.splice(mi,1);
-        const ii = m.incorrect.indexOf(id); if(ii>-1) m.incorrect.splice(ii,1);
-      });
-      changed = true;
-      console.log('Module '+mod+' prestiged! Level: '+m.prestige[mod]);
-    }
-  });
-  if(changed) saveMastery(m);
-}
-
-// ── Session helpers ────────────────────────────────────────────────────────
-function saveSession(){
-  try{
-    const session = {
-      activeQuestionIds: activeQuestions.map(function(q){ return ALL_QUESTIONS.indexOf(q); }),
-      currentIndex: currentIndex,
-      answered: answered,
-      correct: correct,
-      results: results.map(function(r){
-        return { qId: ALL_QUESTIONS.indexOf(r.q), userCorrect: r.userCorrect, userAnswer: r.userAnswer };
-      }),
-      selectedModules: selectedModules.slice(),
-      qCounts: JSON.parse(JSON.stringify(qCounts))
-    };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  }catch(e){}
-}
-
-function clearSession(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
-
-function restoreSession(){
-  try{
-    const raw = localStorage.getItem(SESSION_KEY);
-    if(!raw) return false;
-    const s = JSON.parse(raw);
-    // Validate IDs are all within range
-    if(!s.activeQuestionIds || !s.activeQuestionIds.length) return false;
-    const valid = s.activeQuestionIds.every(function(id){ return id>=0 && id<ALL_QUESTIONS.length; });
-    if(!valid) return false;
-
-    // Restore state
-    activeQuestions = s.activeQuestionIds.map(function(id){ return ALL_QUESTIONS[id]; });
-    currentIndex = s.currentIndex || 0;
-    answered = s.answered || 0;
-    correct = s.correct || 0;
-    results = (s.results||[]).map(function(r){
-      return { q: ALL_QUESTIONS[r.qId], userCorrect: r.userCorrect, userAnswer: r.userAnswer };
-    });
-
-    // Restore splash state (module selection + sliders)
-    if(s.selectedModules){
-      selectedModules = s.selectedModules;
-      [1,2,3,4].forEach(function(n){
-        const card = document.getElementById('mod-'+n);
-        const row = document.getElementById('slider-row-'+n);
-        if(selectedModules.indexOf(n)>-1){
-          card.classList.add('selected'); card.classList.remove('unselected');
-          row.classList.remove('disabled');
-        } else {
-          card.classList.remove('selected'); card.classList.add('unselected');
-          row.classList.add('disabled');
-        }
-      });
-    }
-    if(s.qCounts){
-      [1,2,3,4].forEach(function(n){
-        if(s.qCounts[n] !== undefined){
-          qCounts[n] = s.qCounts[n];
-          const slider = document.getElementById('slider-'+n);
-          const valEl  = document.getElementById('val-'+n);
-          if(slider) slider.value = qCounts[n];
-          if(valEl)  valEl.textContent = qCounts[n];
-        }
-      });
-      updateTotalCount();
-    }
-
-    // If the quiz is already finished, treat as complete (clear session, don't resume)
-    if(currentIndex >= activeQuestions.length) return false;
-
-    return true;
-  }catch(e){ return false; }
-}
-
-// ── Module / slider UI ─────────────────────────────────────────────────────
 function toggleModule(n){
-  const card = document.getElementById('mod-'+n);
   const idx = selectedModules.indexOf(n);
-  if(idx > -1){
-    selectedModules.splice(idx,1);
-    card.classList.remove('selected'); card.classList.add('unselected');
-    document.getElementById('slider-row-'+n).classList.add('disabled');
-  } else {
-    selectedModules.push(n);
-    card.classList.add('selected'); card.classList.remove('unselected');
-    document.getElementById('slider-row-'+n).classList.remove('disabled');
-  }
+  if(idx > -1) selectedModules.splice(idx,1); else selectedModules.push(n);
+  document.getElementById('mod-'+n).classList.toggle('selected');
   document.getElementById('start-btn').disabled = selectedModules.length === 0;
-  updateTotalCount();
 }
 
 function toggleAllModules(){
   if(selectedModules.length === 4){
     selectedModules = [];
-    [1,2,3,4].forEach(function(n){
-      document.getElementById('mod-'+n).classList.remove('selected');
-      document.getElementById('mod-'+n).classList.add('unselected');
-      document.getElementById('slider-row-'+n).classList.add('disabled');
-    });
-    document.getElementById('start-btn').disabled = true;
+    [1,2,3,4].forEach(n => document.getElementById('mod-'+n).classList.remove('selected'));
   } else {
     selectedModules = [1,2,3,4];
-    [1,2,3,4].forEach(function(n){
-      document.getElementById('mod-'+n).classList.add('selected');
-      document.getElementById('mod-'+n).classList.remove('unselected');
-      document.getElementById('slider-row-'+n).classList.remove('disabled');
-    });
-    document.getElementById('start-btn').disabled = false;
+    [1,2,3,4].forEach(n => document.getElementById('mod-'+n).classList.add('selected'));
   }
-  updateTotalCount();
+  document.getElementById('start-btn').disabled = selectedModules.length === 0;
 }
 
-function updateSlider(n, val){
-  qCounts[n] = parseInt(val);
-  document.getElementById('val-'+n).textContent = val;
-  updateTotalCount();
-}
-
-function updateTotalCount(){
-  const total = selectedModules.reduce(function(s,m){ return s + qCounts[m]; }, 0);
-  document.getElementById('total-q-count').textContent = total;
-}
-
-// ── Shuffle ────────────────────────────────────────────────────────────────
-function shuffle(arr){
-  const a = arr.slice();
-  for(let i = a.length-1; i > 0; i--){
-    const j = Math.floor(Math.random()*(i+1));
-    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
-  }
-  return a;
-}
-
-// ── Start exam ─────────────────────────────────────────────────────────────
 function startExam(){
-  clearSession();
-  const mastery = loadMastery();
-  activeQuestions = [];
-
-  selectedModules.forEach(function(mod){
-    // All question indices for this module
-    const modIds = ALL_QUESTIONS
-      .map(function(q,i){ return q.module===mod ? i : -1; })
-      .filter(function(i){ return i>-1; });
-
-    // Bucket 1: unseen + incorrect (not yet mastered) — equal priority, shuffled together
-    const bucket1 = shuffle(modIds.filter(function(id){
-      const isMastered  = mastery.mastered.indexOf(id)  > -1;
-      return !isMastered; // unseen OR incorrect — anything not mastered
-    }));
-
-    // Bucket 2: mastered — fallback only
-    const bucket2 = shuffle(modIds.filter(function(id){
-      return mastery.mastered.indexOf(id) > -1;
-    }));
-
-    const pool = bucket1.concat(bucket2);
-    const n = Math.min(qCounts[mod], pool.length);
-    for(let i = 0; i < n; i++) activeQuestions.push(ALL_QUESTIONS[pool[i]]);
-  });
-
-  activeQuestions = shuffle(activeQuestions);
+  activeQuestions = ALL_QUESTIONS.filter(q => selectedModules.includes(q.module));
   if(activeQuestions.length === 0) return;
-
   currentIndex = 0; answered = 0; correct = 0; results = [];
-  saveSession();
-
   document.getElementById('splash').style.display = 'none';
   document.getElementById('exam').style.display = 'block';
   renderQuestion();
 }
 
-// ── Render question ────────────────────────────────────────────────────────
 function renderQuestion(){
   const q = activeQuestions[currentIndex];
   const total = activeQuestions.length;
-  document.getElementById('progress-text').textContent = 'Question '+(currentIndex+1)+' of '+total;
-  document.getElementById('score-text').textContent = 'Score: '+correct+' / '+answered;
+  
+  document.getElementById('progress-text').textContent = `Question ${currentIndex+1} of ${total}`;
+  document.getElementById('score-text').textContent = `Score: ${correct} / ${answered}`;
   document.getElementById('progress-fill').style.width = ((currentIndex/total)*100)+'%';
+  
   const modLabels = {1:'Module 1 — Perioperative', 2:'Module 2 — Fluids & Electrolytes', 3:'Module 3 — Neurological', 4:'Module 4 — Cardiovascular'};
-  document.getElementById('q-meta').innerHTML =
-    '<span class="meta-tag module">'+modLabels[q.module]+'</span>'+
-    '<span class="meta-tag type">'+q.type+'</span>'+
-    '<span class="meta-tag diff">'+q.difficulty+'</span>';
-  document.getElementById('q-num').textContent = 'Question '+(currentIndex+1);
+  document.getElementById('q-meta').innerHTML = `
+    <span class="meta-tag module">${modLabels[q.module]}</span>
+    <span class="meta-tag type">${q.type}</span>
+    <span class="meta-tag diff">${q.difficulty}</span>
+  `;
+  document.getElementById('q-num').textContent = `Question ${currentIndex+1}`;
   document.getElementById('q-text').textContent = q.question;
+  
   const isSATA = Array.isArray(q.correct);
   const optionsEl = document.getElementById('q-options');
   const letters = ['A','B','C','D','E'];
+  
   if(isSATA){
     let html = '';
-    q.options.forEach(function(opt,i){
-      html += '<div class="option" id="opt-'+i+'" onclick="toggleSATA('+i+')"><span class="option-letter">'+letters[i]+'</span><span>'+opt+'</span></div>';
+    q.options.forEach((opt,i) => {
+      html += `<div class="option" id="opt-${i}" onclick="toggleSATA(${i})" data-selected="false">
+        <span class="option-letter">${letters[i]}</span>
+        <span>${opt}</span>
+      </div>`;
     });
-    optionsEl.innerHTML = html +
-      '<div style="margin-top:0.5rem"><em style="font-size:0.8rem;color:var(--text-muted)">Select all that apply</em><br>'+
-      '<button class="btn btn-sm" style="margin-top:0.75rem" onclick="submitSATA()">Submit Answer</button></div>';
+    optionsEl.innerHTML = html + `<div style="margin-top:0.5rem">
+      <em style="font-size:0.8rem;color:var(--text-muted)">Select all that apply</em><br>
+      <button class="btn btn-sm" style="margin-top:0.75rem" onclick="submitSATA()">Submit Answer</button>
+    </div>`;
   } else {
     let html = '';
-    q.options.forEach(function(opt,i){
-      html += '<div class="option" id="opt-'+i+'" onclick="selectAnswer('+i+')"><span class="option-letter">'+letters[i]+'</span><span>'+opt+'</span></div>';
+    q.options.forEach((opt,i) => {
+      html += `<div class="option" id="opt-${i}" onclick="selectAnswer(${i})">
+        <span class="option-letter">${letters[i]}</span>
+        <span>${opt}</span>
+      </div>`;
     });
     optionsEl.innerHTML = html;
   }
-  document.getElementById('q-meta').style.display = 'none';
+  
   document.getElementById('hint-btn').style.display = 'block';
   document.getElementById('hint-box').textContent = q.hint;
   document.getElementById('hint-box').classList.remove('visible');
   hintVisible = false;
+  
   const fb = document.getElementById('feedback-box');
   fb.className = 'feedback-box';
   fb.innerHTML = '';
+  
   document.getElementById('next-btn').style.display = 'none';
 }
 
@@ -1782,48 +1470,50 @@ function toggleSATA(i){
 
 function submitSATA(){
   const q = activeQuestions[currentIndex];
-  const qId = ALL_QUESTIONS.indexOf(q);
   const correctArr = q.correct.slice().sort();
   const selectedArr = sataSelected.slice().sort();
   const isCorrect = JSON.stringify(correctArr) === JSON.stringify(selectedArr);
+  
   lockOptions();
   sataSelected = [];
-  q.options.forEach(function(_,i){
+  
+  q.options.forEach((_, i) => {
     const opt = document.getElementById('opt-'+i);
-    opt.style.borderColor=''; opt.style.background='';
-    if(q.correct.indexOf(i)>-1) opt.classList.add('reveal-correct');
+    opt.style.borderColor = ''; opt.style.background = '';
+    if(q.correct.includes(i)) opt.classList.add('reveal-correct');
   });
+  
   showFeedback(isCorrect, q);
   answered++;
   if(isCorrect) correct++;
-  results.push({q:q, userCorrect:isCorrect, userAnswer:selectedArr});
-  recordAnswer(qId, isCorrect);
-  document.getElementById('score-text').textContent = 'Score: '+correct+' / '+answered;
+  results.push({q, userCorrect: isCorrect, userAnswer: selectedArr});
+  document.getElementById('score-text').textContent = `Score: ${correct} / ${answered}`;
   document.getElementById('next-btn').style.display = 'block';
-  saveSession();
+  
   if(!isCorrect) triggerJumpScare();
 }
 
 function selectAnswer(i){
   const q = activeQuestions[currentIndex];
-  const qId = ALL_QUESTIONS.indexOf(q);
   const isCorrect = i === q.correct;
+  
   lockOptions();
+  
   document.getElementById('opt-'+i).classList.add(isCorrect ? 'correct' : 'wrong');
   if(!isCorrect) document.getElementById('opt-'+q.correct).classList.add('reveal-correct');
+  
   showFeedback(isCorrect, q);
   answered++;
   if(isCorrect) correct++;
-  results.push({q:q, userCorrect:isCorrect, userAnswer:i});
-  recordAnswer(qId, isCorrect);
-  document.getElementById('score-text').textContent = 'Score: '+correct+' / '+answered;
+  results.push({q, userCorrect: isCorrect, userAnswer: i});
+  document.getElementById('score-text').textContent = `Score: ${correct} / ${answered}`;
   document.getElementById('next-btn').style.display = 'block';
-  saveSession();
+  
   if(!isCorrect) triggerJumpScare();
 }
 
 function lockOptions(){
-  document.querySelectorAll('.option').forEach(function(o){ o.classList.add('locked'); o.onclick = null; });
+  document.querySelectorAll('.option').forEach(o => { o.classList.add('locked'); o.onclick = null; });
   document.getElementById('hint-btn').style.display = 'none';
 }
 
@@ -1831,287 +1521,236 @@ function showFeedback(isCorrect, q){
   const fb = document.getElementById('feedback-box');
   const letters = ['A','B','C','D','E'];
   const isSATA = Array.isArray(q.correct);
+  
   let wrongHtml = '';
   if(!isSATA){
-    q.options.forEach(function(opt,i){
-      if(i !== q.correct) wrongHtml += '<div class="other-option"><strong>'+letters[i]+'.</strong> '+q.whyWrong[i]+'</div>';
+    q.options.forEach((opt,i) => {
+      if(i !== q.correct){
+        wrongHtml += `<div class="other-option"><strong>${letters[i]}.</strong> ${q.whyWrong[i]}</div>`;
+      }
     });
   }
-  fb.className = 'feedback-box visible '+(isCorrect ? 'correct-fb' : 'wrong-fb');
-  fb.innerHTML =
-    '<div class="feedback-label">'+(isCorrect ? '&#10003; CORRECT' : '&#10007; INCORRECT')+'</div>'+
-    '<div class="rationale-section"><span class="rationale-label">Rationale:</span> '+q.rationale+
-    (wrongHtml ? '<div class="other-options" style="margin-top:0.6rem"><strong>Why other options are incorrect:</strong>'+wrongHtml+'</div>' : '')+
-    '</div>'+
-    '<div class="rationale-section"><span class="rationale-label">ATI/NCLEX Rule:</span> '+q.rule+'<br>'+
-    '<span class="rationale-label">Student Takeaway:</span> '+q.takeaway+'</div>';
+  
+  fb.className = `feedback-box visible ${isCorrect ? 'correct-fb' : 'wrong-fb'}`;
+  fb.innerHTML = `
+    <div class="feedback-label">${isCorrect ? '✓ CORRECT' : '✗ INCORRECT'}</div>
+    <div class="rationale-section">
+      <span class="rationale-label">Rationale:</span>
+      ${q.rationale}
+      ${wrongHtml ? `<div class="other-options" style="margin-top:0.6rem"><strong>Why other options are incorrect:</strong>${wrongHtml}</div>` : ''}
+    </div>
+    <div class="rationale-section">
+      <span class="rationale-label">ATI/NCLEX Rule:</span> ${q.rule}<br>
+      <span class="rationale-label">Student Takeaway:</span> ${q.takeaway}
+    </div>
+  `;
 }
 
 function toggleHint(){
   hintVisible = !hintVisible;
   const hb = document.getElementById('hint-box');
-  const meta = document.getElementById('q-meta');
-  if(hintVisible){ hb.classList.add('visible'); meta.style.display='flex'; }
-  else { hb.classList.remove('visible'); meta.style.display='none'; }
+  if(hintVisible) hb.classList.add('visible'); else hb.classList.remove('visible');
 }
 
 function nextQuestion(){
-  saveSession();
-  if(currentIndex + 1 >= activeQuestions.length){ showResults(); }
-  else { currentIndex++; renderQuestion(); window.scrollTo({top:0,behavior:'smooth'}); }
+  if(currentIndex + 1 >= activeQuestions.length){
+    showResults();
+  } else {
+    currentIndex++;
+    renderQuestion();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
 }
 
 function triggerJumpScare(){
   const el = document.getElementById('jumpscare');
   el.classList.add('active');
+  
+  // Try audio
   try{
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const osc = ctx.createOscillator();
-    const g = ctx.createGain();
-    osc.connect(g); g.connect(ctx.destination);
-    osc.type='sawtooth';
-    osc.frequency.setValueAtTime(80,ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(300,ctx.currentTime+0.3);
-    g.gain.setValueAtTime(0.8,ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+1.5);
-    osc.start(ctx.currentTime); osc.stop(ctx.currentTime+1.5);
-  }catch(e){}
-  setTimeout(function(){ el.classList.remove('active'); }, 2200);
+    const gainNode = ctx.createGain();
+    osc.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(80, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.3);
+    gainNode.gain.setValueAtTime(0.8, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 1.5);
+  } catch(e){}
+  
+  setTimeout(() => { el.classList.remove('active'); }, 2200);
 }
 
 function showResults(){
-  clearSession();
-  checkModuleResets();
-  updateModuleCards();
   document.getElementById('exam').style.display = 'none';
   document.getElementById('results').style.display = 'block';
+  
   const pct = Math.round((correct/answered)*100);
   const scoreEl = document.getElementById('final-score-display');
-  scoreEl.textContent = pct+'%';
-  scoreEl.className = 'score-display '+(pct>=70?'pass':'fail');
-  document.getElementById('final-score-label').textContent = correct+' correct out of '+answered+' questions';
+  scoreEl.textContent = `${pct}%`;
+  scoreEl.className = `score-display ${pct >= 70 ? 'pass' : 'fail'}`;
+  document.getElementById('final-score-label').textContent = `${correct} correct out of ${answered} questions`;
+  
+  // Stats by module
   const modStats = {};
-  results.forEach(function(r){
+  results.forEach(r => {
     const m = r.q.module;
-    if(!modStats[m]) modStats[m]={total:0,correct:0};
+    if(!modStats[m]) modStats[m] = {total:0, correct:0};
     modStats[m].total++;
     if(r.userCorrect) modStats[m].correct++;
   });
+  
   const modNames = {1:'Periop',2:'Fluids',3:'Neuro',4:'Cardio'};
-  let statsHtml = '<div class="stat-card"><span class="stat-num">'+pct+'%</span><span class="stat-label">Overall Score</span></div>';
-  Object.keys(modStats).forEach(function(m){
-    const s=modStats[m]; const p=Math.round((s.correct/s.total)*100);
-    statsHtml += '<div class="stat-card"><span class="stat-num">'+p+'%</span><span class="stat-label">Module '+m+' — '+modNames[m]+'</span></div>';
+  let statsHtml = `<div class="stat-card"><span class="stat-num">${pct}%</span><span class="stat-label">Overall Score</span></div>`;
+  Object.keys(modStats).forEach(m => {
+    const s = modStats[m];
+    const p = Math.round((s.correct/s.total)*100);
+    statsHtml += `<div class="stat-card"><span class="stat-num">${p}%</span><span class="stat-label">Module ${m} — ${modNames[m]}</span></div>`;
   });
   document.getElementById('results-grid').innerHTML = statsHtml;
+  
+  // Review
   const letters = ['A','B','C','D','E'];
   let reviewHtml = '';
-  results.forEach(function(r,i){
-    const q=r.q; const isSATA=Array.isArray(q.correct);
-    const answerText = isSATA
-      ? 'Selected: '+(Array.isArray(r.userAnswer)?r.userAnswer.map(function(x){return letters[x];}).join(', '):'N/A')+' | Correct: '+q.correct.map(function(x){return letters[x];}).join(', ')
-      : 'Your answer: '+letters[r.userAnswer]+' | Correct: '+letters[q.correct];
-    reviewHtml += '<div class="review-item">'+
-      '<div class="review-item-header" onclick="toggleReview('+i+')">'+
-      '<div class="review-q"><strong>Q'+(i+1)+'.</strong> '+q.question.substring(0,100)+'...</div>'+
-      '<span class="review-badge '+(r.userCorrect?'pass':'fail')+'">'+(r.userCorrect?'CORRECT':'INCORRECT')+'</span></div>'+
-      '<div class="review-body" id="review-body-'+i+'">'+
-      '<div class="review-answer '+(r.userCorrect?'correct-ans':'wrong-ans')+'"><strong>'+answerText+'</strong></div>'+
-      '<p style="margin:0.5rem 0 0;font-size:0.85rem;color:var(--text)">'+q.question+'</p>'+
-      '<div class="review-rationale" style="margin-top:0.75rem"><strong style="color:var(--text)">Rationale:</strong> '+q.rationale+'</div>'+
-      '<div class="review-rationale" style="margin-top:0.4rem"><strong style="color:var(--text)">Takeaway:</strong> '+q.takeaway+'</div>'+
-      '</div></div>';
+  results.forEach((r,i) => {
+    const q = r.q;
+    const isSATA = Array.isArray(q.correct);
+    let answerText = isSATA 
+      ? `Selected: ${Array.isArray(r.userAnswer) ? r.userAnswer.map(x=>letters[x]).join(', ') : 'N/A'} | Correct: ${q.correct.map(x=>letters[x]).join(', ')}`
+      : `Your answer: ${letters[r.userAnswer]} | Correct: ${letters[q.correct]}`;
+    
+    reviewHtml += `<div class="review-item">
+      <div class="review-item-header" onclick="toggleReview(${i})">
+        <div class="review-q"><strong>Q${i+1}.</strong> ${q.question.substring(0,100)}...</div>
+        <span class="review-badge ${r.userCorrect ? 'pass' : 'fail'}">${r.userCorrect ? 'CORRECT' : 'INCORRECT'}</span>
+      </div>
+      <div class="review-body" id="review-body-${i}">
+        <div class="review-answer ${r.userCorrect ? 'correct-ans' : 'wrong-ans'}"><strong>${answerText}</strong></div>
+        <p style="margin:0.5rem 0 0;font-size:0.85rem;color:var(--text)">${q.question}</p>
+        <div class="review-rationale" style="margin-top:0.75rem"><strong style="color:var(--text)">Rationale:</strong> ${q.rationale}</div>
+        <div class="review-rationale" style="margin-top:0.4rem"><strong style="color:var(--text)">Takeaway:</strong> ${q.takeaway}</div>
+      </div>
+    </div>`;
   });
   document.getElementById('review-list').innerHTML = reviewHtml;
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
-function toggleReview(i){ document.getElementById('review-body-'+i).classList.toggle('open'); }
+function toggleReview(i){
+  const body = document.getElementById('review-body-'+i);
+  body.classList.toggle('open');
+}
 
 function restartExam(){
-  clearSession();
   document.getElementById('results').style.display = 'none';
-  document.getElementById('splash').style.display = 'flex';
+  document.getElementById('exam').style.display = 'block';
+  currentIndex = 0; answered = 0; correct = 0; results = [];
   sataSelected = [];
+  activeQuestions = ALL_QUESTIONS.filter(q => selectedModules.includes(q.module));
+  renderQuestion();
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 function backToSplash(){
-  clearSession();
   document.getElementById('results').style.display = 'none';
   document.getElementById('splash').style.display = 'flex';
   sataSelected = [];
 }
 
-function exportJSON(){
-  const modNames = {1:'Perioperative Care',2:'Fluids & Electrolytes',3:'Neurological Disorders',4:'Cardiovascular Conditions'};
-  const letters = ['A','B','C','D','E'];
-  const exportData = {
-    course: 'NRSG 3320 Adult 1 Medical-Surgical Nursing',
-    description: 'ATI/NCLEX Practice Exam Question Bank',
-    exported: new Date().toISOString(),
-    totalQuestions: ALL_QUESTIONS.length,
-    modules: modNames,
-    questions: ALL_QUESTIONS.map(function(q,idx){
-      return {
-        id: idx+1, module: q.module, moduleName: modNames[q.module],
-        topic: q.topic, type: q.type, difficulty: q.difficulty, source: q.source,
-        question: q.question,
-        options: q.options.map(function(text,i){
-          return { letter: letters[i], index: i, text: text,
-            isCorrect: Array.isArray(q.correct) ? q.correct.indexOf(i)>-1 : q.correct===i };
-        }),
-        correctAnswer: Array.isArray(q.correct) ? q.correct.map(function(i){return letters[i];}).join(', ') : letters[q.correct],
-        correctIndex: q.correct,
-        questionType: Array.isArray(q.correct) ? 'SATA' : 'single-best-answer',
-        hint: q.hint, rationale: q.rationale, whyWrong: q.whyWrong,
-        rule: q.rule, clinicalCue: q.cue, studentTakeaway: q.takeaway
-      };
-    })
-  };
-  const json = JSON.stringify(exportData, null, 2);
-  const blob = new Blob([json], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href=url; a.download='NRSG3320_Question_Bank.json'; a.click();
-  URL.revokeObjectURL(url);
-}
-
 function downloadPDF(){
-  try{
-    const {jsPDF}=window.jspdf;
-    const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'letter'});
-    const pct=Math.round((correct/answered)*100);
-    let y=20;
-    doc.setFontSize(18);doc.setFont('helvetica','bold');
-    doc.text('NRSG 3320 Adult 1 Med-Surg',105,y,{align:'center'});y+=8;
-    doc.setFontSize(14);doc.text('ATI/NCLEX Practice Exam Report',105,y,{align:'center'});y+=8;
-    doc.setFontSize(11);doc.setFont('helvetica','normal');
-    doc.text('Date: '+new Date().toLocaleDateString(),105,y,{align:'center'});y+=6;
-    doc.text('Final Score: '+pct+'% ('+correct+'/'+answered+' correct)',105,y,{align:'center'});y+=12;
-    doc.setLineWidth(0.5);doc.line(15,y,195,y);y+=8;
-    const letters=['A','B','C','D','E'];
-    results.forEach(function(r,i){
-      const q=r.q;
-      if(y>240){doc.addPage();y=20;}
-      doc.setFontSize(10);doc.setFont('helvetica','bold');
-      doc.text('Q'+(i+1)+' ['+(r.userCorrect?'CORRECT':'INCORRECT')+'] — Module '+q.module+': '+q.topic,15,y);y+=6;
-      doc.setFont('helvetica','normal');doc.setFontSize(9);
-      const qL=doc.splitTextToSize(q.question,175);
-      doc.text(qL,15,y);y+=qL.length*5+2;
-      q.options.forEach(function(opt,oi){
-        const isC=Array.isArray(q.correct)?q.correct.indexOf(oi)>-1:q.correct===oi;
-        if(isC)doc.setFont('helvetica','bold');else doc.setFont('helvetica','normal');
-        const oL=doc.splitTextToSize(letters[oi]+'. '+opt,170);
-        if(y>260){doc.addPage();y=20;}
-        doc.text(oL,20,y);y+=oL.length*4.5+1;
-      });
-      y+=2;doc.setFont('helvetica','bold');
-      const cl=Array.isArray(q.correct)?'Correct: '+q.correct.map(function(x){return letters[x];}).join(', '):'Correct Answer: '+letters[q.correct];
-      doc.text(cl,15,y);y+=5;
+  try {
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'letter'});
+    
+    const pct = Math.round((correct/answered)*100);
+    let y = 20;
+    
+    // Header
+    doc.setFontSize(18);
+    doc.setFont('helvetica','bold');
+    doc.text('NRSG 3320 Adult 1 Med-Surg', 105, y, {align:'center'});
+    y += 8;
+    doc.setFontSize(14);
+    doc.text('ATI/NCLEX Practice Exam Report', 105, y, {align:'center'});
+    y += 8;
+    doc.setFontSize(11);
+    doc.setFont('helvetica','normal');
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 105, y, {align:'center'});
+    y += 6;
+    doc.text(`Final Score: ${pct}% (${correct}/${answered} correct)`, 105, y, {align:'center'});
+    y += 12;
+    
+    // Divider
+    doc.setLineWidth(0.5);
+    doc.line(15, y, 195, y);
+    y += 8;
+    
+    results.forEach((r,i) => {
+      const q = r.q;
+      const letters = ['A','B','C','D','E'];
+      
+      if(y > 240){
+        doc.addPage();
+        y = 20;
+      }
+      
+      doc.setFontSize(10);
+      doc.setFont('helvetica','bold');
+      const status = r.userCorrect ? '✓' : '✗';
+      const qLabel = `Q${i+1} [${status}] — Module ${q.module}: ${q.topic}`;
+      doc.text(qLabel, 15, y);
+      y += 6;
+      
       doc.setFont('helvetica','normal');
-      const rL=doc.splitTextToSize('Rationale: '+q.rationale,175);
-      if(y+rL.length*4.5>265){doc.addPage();y=20;}
-      doc.text(rL,15,y);y+=rL.length*4.5+2;
-      const tL=doc.splitTextToSize('Takeaway: '+q.takeaway,175);
-      if(y+tL.length*4.5>265){doc.addPage();y=20;}
-      doc.text(tL,15,y);y+=tL.length*4.5+6;
-      doc.setLineWidth(0.2);doc.line(15,y,195,y);y+=6;
+      doc.setFontSize(9);
+      
+      const qLines = doc.splitTextToSize(q.question, 175);
+      doc.text(qLines, 15, y);
+      y += qLines.length * 5 + 2;
+      
+      q.options.forEach((opt,oi) => {
+        const isCorrect = Array.isArray(q.correct) ? q.correct.includes(oi) : q.correct === oi;
+        if(isCorrect) doc.setFont('helvetica','bold');
+        else doc.setFont('helvetica','normal');
+        const optLines = doc.splitTextToSize(`${letters[oi]}. ${opt}`, 170);
+        if(y > 260){ doc.addPage(); y = 20; }
+        doc.text(optLines, 20, y);
+        y += optLines.length * 4.5 + 1;
+      });
+      
+      y += 2;
+      doc.setFont('helvetica','bold');
+      const corrLabel = Array.isArray(q.correct) 
+        ? `Correct: ${q.correct.map(x=>letters[x]).join(', ')}` 
+        : `Correct Answer: ${letters[q.correct]}`;
+      doc.text(corrLabel, 15, y);
+      y += 5;
+      
+      doc.setFont('helvetica','normal');
+      const rLines = doc.splitTextToSize(`Rationale: ${q.rationale}`, 175);
+      if(y + rLines.length * 4.5 > 265){ doc.addPage(); y = 20; }
+      doc.text(rLines, 15, y);
+      y += rLines.length * 4.5 + 2;
+      
+      const tLines = doc.splitTextToSize(`Takeaway: ${q.takeaway}`, 175);
+      if(y + tLines.length * 4.5 > 265){ doc.addPage(); y = 20; }
+      doc.text(tLines, 15, y);
+      y += tLines.length * 4.5 + 6;
+      
+      doc.setLineWidth(0.2);
+      doc.line(15, y, 195, y);
+      y += 6;
     });
+    
     doc.save('NRSG3320_Exam_Report.pdf');
-  }catch(err){alert('PDF generation failed. Try your browser print function.');}
-}
-
-// ── Quit current quiz ─────────────────────────────────────────────────────
-function quitQuiz(){
-  // Mark the current unanswered question as incorrect in mastery.
-  // It was never answered — treating as incorrect ensures it surfaces
-  // in the priority pool next quiz rather than silently disappearing.
-  const currentQ = activeQuestions[currentIndex];
-  if(currentQ){
-    const qId = ALL_QUESTIONS.indexOf(currentQ);
-    if(qId > -1) recordAnswer(qId, false);
+  } catch(err){
+    alert('PDF generation failed. Please try again or use your browser\'s print function.');
   }
-
-  // Mastery for already-answered questions was committed live on each answer.
-  // Clear session, check resets, go home.
-  clearSession();
-  checkModuleResets();
-
-  // Reset in-memory state
-  activeQuestions = []; currentIndex = 0; answered = 0; correct = 0; results = [];
-  sataSelected = [];
-
-  document.getElementById('exam').style.display = 'none';
-  document.getElementById('splash').style.display = 'flex';
-  updateModuleCards();
 }
-
-// ── Module card mastery indicators ────────────────────────────────────────
-function makeStar(size){
-  // Returns SVG markup for a single 5-pointed star of given pixel size
-  const s = size;
-  const cx = s/2, cy = s/2;
-  const outerR = s/2, innerR = s/2 * 0.42;
-  const pts = [];
-  for(let i=0;i<10;i++){
-    const angle = (Math.PI/5)*i - Math.PI/2;
-    const r = (i%2===0) ? outerR : innerR;
-    pts.push((cx + r*Math.cos(angle)).toFixed(2)+','+(cy + r*Math.sin(angle)).toFixed(2));
-  }
-  return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 '+s+' '+s+'" xmlns="http://www.w3.org/2000/svg" style="display:block;flex-shrink:0">'+
-    '<polygon points="'+pts.join(' ')+'" fill="#d4c89a"/></svg>';
-}
-
-function updateModuleCards(){
-  const m = loadMastery();
-  const prestige = m.prestige || {1:0, 2:0, 3:0, 4:0};
-  [1,2,3,4].forEach(function(mod){
-    const card = document.getElementById('mod-'+mod);
-    if(!card) return;
-
-    // Count mastered questions for this module
-    const modIds = ALL_QUESTIONS
-      .map(function(q,i){ return q.module===mod ? i : -1; })
-      .filter(function(i){ return i>-1; });
-    const total = modIds.length; // always 20
-    const masteredCount = modIds.filter(function(id){ return m.mastered.indexOf(id)>-1; }).length;
-    const pct = total > 0 ? Math.round((masteredCount / total) * 100) : 0;
-
-    // Remove old indicators if present (re-render on update)
-    const oldPct   = card.querySelector('.mod-mastery-pct');
-    const oldStars = card.querySelector('.mod-prestige-stars');
-    if(oldPct)   oldPct.remove();
-    if(oldStars) oldStars.remove();
-
-    // Mastery % — bottom right
-    const pctEl = document.createElement('div');
-    pctEl.className = 'mod-mastery-pct';
-    pctEl.textContent = pct + '%';
-    card.appendChild(pctEl);
-
-    // Prestige stars — bottom left (only if prestige > 0)
-    const prestigeLevel = prestige[mod] || 0;
-    if(prestigeLevel > 0){
-      const starsEl = document.createElement('div');
-      starsEl.className = 'mod-prestige-stars';
-      let starsHtml = '';
-      for(let i=0; i<prestigeLevel; i++) starsHtml += makeStar(11);
-      starsEl.innerHTML = starsHtml;
-      card.appendChild(starsEl);
-    }
-  });
-}
-
-// ── Page load: restore session or show splash ──────────────────────────────
-window.addEventListener('load', function(){
-  updateModuleCards();
-  if(restoreSession()){
-    document.getElementById('splash').style.display = 'none';
-    document.getElementById('exam').style.display = 'block';
-    renderQuestion();
-  }
-  // else: splash is already visible by default
-});
 </script>
 </body>
 </html>
